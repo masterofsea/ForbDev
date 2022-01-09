@@ -1,0 +1,58 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>Forbex</PageTitle>
+
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+<RadzenContextMenu />
+
+<RadzenLayout>
+  <ChildContent>
+    <RadzenHeader>
+      <ChildContent>
+        <div class="row justify-content-start align-items-center">
+          <div class="col-6 d-flex align-items-center">
+            <RadzenSidebarToggle Click="@Collapse"></RadzenSidebarToggle>
+            <RadzenLabel Text="ForbexRadzen"></RadzenLabel>
+          </div>
+          <div class="col-6 text-right"></div>
+        </div>
+      </ChildContent>
+    </RadzenHeader>
+    <RadzenBody>
+      <ChildContent>
+        <RadzenContentContainer Name="main">
+          @Body
+        </RadzenContentContainer>
+      </ChildContent>
+    </RadzenBody>
+    <RadzenSidebar> 
+      <ChildContent>
+        <RadzenPanelMenu style="height: 100%">
+          <ChildContent>
+            <RadzenPanelMenuItem Text="Договоры" Path="contracts"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Добавление договора" Path="сontractCreation"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Contracts" Path="contracts"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Contracts" Path="contracts"></RadzenPanelMenuItem>
+          </ChildContent>
+        </RadzenPanelMenu>
+      </ChildContent>
+    </RadzenSidebar>
+    <RadzenFooter>
+      <ChildContent>
+        <RadzenLabel Text="ForbexRadzen, Copyright Ⓒ 2022">
+        </RadzenLabel>
+      </ChildContent>
+    </RadzenFooter>
+  </ChildContent>
+</RadzenLayout>
+
+@code
+{
+  bool _hidden;
+  void Collapse()
+  {
+    _hidden = !_hidden;
+  }
+}

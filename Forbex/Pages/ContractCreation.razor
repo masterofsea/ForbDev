@@ -1,0 +1,72 @@
+﻿@page "/сontractCreation"
+@using Forbex.DAL.Data
+
+<style>
+    form .row {
+        margin-bottom: 16px;
+        margin-top: 16px;
+    }
+</style>
+
+<PageTitle>Создание договора</PageTitle>
+
+<RadzenSteps @bind-SelectedIndex="@_selectedIndex" Change="@OnChange">
+    <Steps>
+        <RadzenStepsItem Text="Договор">
+            <RadzenTemplateForm TItem="Contract" Data="@Model" Submit="@SaveContract">
+                <RadzenFieldset Text="Purchase Info">
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Адрес" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" Name="Address" @bind-Value="@Model.Address" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Дата заключения" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenDatePicker style="width: 100%;" Name="ConclusionDate" @bind-Value="Model.ConclusionDate" />
+                        </div>
+                    </div>
+                                
+                    <div class="row col-md-6">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="ИФНС" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" Name="Ifts" @bind-Value="Model.Ifts" />
+                        </div>
+                    </div>
+                    <div class="row col-3">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Сохранить"/>
+                    </div>
+                </RadzenFieldset>
+            </RadzenTemplateForm>
+        </RadzenStepsItem>
+        
+        
+        <RadzenStepsItem Text="Orders">
+            Orders
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Order Details">
+            Order Details
+        </RadzenStepsItem>
+    </Steps>
+</RadzenSteps>
+
+@code {
+    int _selectedIndex;
+    Contract Model { get; } = new();
+    void OnChange(int index)
+    {
+        Console.WriteLine($"Step with index {index} was selected.");
+    }
+
+    void SaveContract(Contract contract)
+    {
+        
+    }
+}

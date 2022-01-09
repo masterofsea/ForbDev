@@ -1,0 +1,31 @@
+@page "/"
+@page "/Contracts"
+
+@using Forbex.DAL.Repositories.Contracts
+@using Forbex.DAL.Data
+
+
+<PageTitle>Договоры Forbex</PageTitle>
+
+<RadzenDataGrid Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="5"
+                AllowSorting="true" AllowMultiColumnSorting="true"
+                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>
+        <RadzenDataGridColumn TItem="Contract" Property="Id" Title="Id"/>
+        <RadzenDataGridColumn TItem="Contract" Property="Ifts" Title="Ifts"/>
+        <RadzenDataGridColumn TItem="Contract" Property="Address" Title="Address"/>
+    </Columns>
+</RadzenDataGrid>
+
+@code
+{
+    [Inject] 
+    IContractsRepository ContractsRepository { get; set; }
+    
+    IEnumerable<Contract> Contracts { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Contracts = ContractsRepository.Contracts;
+    }
+}
