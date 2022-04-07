@@ -1,4 +1,6 @@
-﻿using JetBrains.Annotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using JetBrains.Annotations;
 
 namespace ForbexDAL.Data;
 
@@ -77,7 +79,41 @@ public class Lessee
     /// Расчетный счет
     /// </summary>
     public string? CheckingAccount { get; set; }
+    
+    /// <summary>
+    /// Организационно-правовая форма сокращенно
+    /// </summary>
+    public OrganizationLegalFormShort OrganizationLegalFormShort { get; set; }
 
-
+    /// <summary>
+    /// Организационно-правовая форма полностью
+    /// </summary>
+    [NotMapped]
+    public OrganizationLegalForm OrganizationLegalForm => (OrganizationLegalForm) OrganizationLegalFormShort;
+    
     public static Lessee EmptyLessee { get; } = new();
+}
+
+public enum OrganizationLegalFormShort
+{
+    [Description("ОАО")]
+    OAO,
+    
+    [Description("ООО")]
+    OOO,
+
+    [Description("ЗАО")]
+    ZAO,
+}
+
+public enum OrganizationLegalForm
+{
+    [Description("Объединенное акционерное общество")]
+    OAO,
+    
+    [Description("Объединенно общество с ограниченной ответственностью")]
+    OOO,
+
+    [Description("ЗАО")]
+    ZAO,
 }
