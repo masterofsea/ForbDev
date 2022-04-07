@@ -10,4 +10,9 @@
       <ProjectReference Include="..\ForbexDAL\ForbexDAL.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="MailBox\MessageSending\Contracts" />
+      <Folder Include="MailBox\MessageSending\Implementations" />
+    </ItemGroup>
+
 </Project>
