@@ -1,31 +1,79 @@
 @page "/"
-@page "/Contracts"
-
-@using Forbex.DAL.Repositories.Contracts
-@using Forbex.DAL.Data
+@page "/contracts"
+@using ForbexDAL.Data
+@using ForbexDAL.Repositories.Contracts
 
 
 <PageTitle>Договоры Forbex</PageTitle>
 
-<RadzenDataGrid Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="5"
+@* @if (SelectedContracts?.Any() == true) *@
+@* { *@
+@*     <NavLink class="btn btn-sm btn-info" href="@GetMailUri(SelectedContracts.First().Id)"> *@
+@*         Отправить письмо *@
+@*     </NavLink> *@
+@* } *@
+
+<h1>Таблица</h1>
+
+<RadzenDataGrid @ref="contractsGrid" Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="20"
                 AllowSorting="true" AllowMultiColumnSorting="true"
-                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or">
+                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
+                SelectionMode="DataGridSelectionMode.Single" @bind-Value="@SelectedContracts"
+                AllowColumnResize="true">
+    
     <Columns>
         <RadzenDataGridColumn TItem="Contract" Property="Id" Title="Id"/>
+        <FooterTemplate>
+            Displayed orders: <b>@contractsGrid.View.Count().ToString()</b> of <b>@Contracts.Count().ToString()</b>
+        </FooterTemplate>
         <RadzenDataGridColumn TItem="Contract" Property="Ifts" Title="Ifts"/>
         <RadzenDataGridColumn TItem="Contract" Property="Address" Title="Address"/>
+        <RadzenDataGridColumn TItem="Contract" Property="ConclusionDate" Title="ConclusionDate"/>
+        <RadzenDataGridColumn TItem="Contract" Property="ContractNumber" Title="ContractNumber"/>
+        <RadzenDataGridColumn TItem="Contract" Property="LeaseStartDate" Title="LeaseStartDate"/>
+        <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <Template Context="contract">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(contract))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="60px">
+            <Template Context="contract">
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" Click="@(args => GoToLetterCreation(contract.Id))"
+                              @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
 
 @code
 {
-    [Inject] 
-    IContractsRepository ContractsRepository { get; set; }
+    RadzenDataGrid<Contract> contractsGrid;
     
-    IEnumerable<Contract> Contracts { get; set; }
+    [Inject]
+    IContractsRepository ContractsRepository { get; set; }
+    [Inject]
+    NavigationManager NavManager { get; set; }
+    
+    IEnumerable<Contract?>? Contracts { get; set; }
+    IList<Contract>? SelectedContracts { get; set; }
 
     protected override void OnInitialized()
     {
-        Contracts = ContractsRepository.Contracts;
+        Contracts = ContractsRepository.GetAllContracts();
+    }
+
+    async Task DeleteRow(Contract contract)
+    {
+        await ContractsRepository.RemoveContractAsync(contract);
+        
+        await contractsGrid.Reload();
+    }
+
+    void GoToLetterCreation(int contractId)
+    {
+        NavManager.NavigateTo($"Mail/{contractId}");
     }
 }

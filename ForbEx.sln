@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forbex", "Forbex\Forbex.csproj", "{78EE4A8D-64EF-48DF-98BF-5F3C193EB3A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForbexDAL", "ForbexDAL\ForbexDAL.csproj", "{A88054C8-03AF-42A5-BD29-82E2F299D2D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForbexBAL", "ForbexBAL\ForbexBAL.csproj", "{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78EE4A8D-64EF-48DF-98BF-5F3C193EB3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78EE4A8D-64EF-48DF-98BF-5F3C193EB3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78EE4A8D-64EF-48DF-98BF-5F3C193EB3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78EE4A8D-64EF-48DF-98BF-5F3C193EB3A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A88054C8-03AF-42A5-BD29-82E2F299D2D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A88054C8-03AF-42A5-BD29-82E2F299D2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A88054C8-03AF-42A5-BD29-82E2F299D2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A88054C8-03AF-42A5-BD29-82E2F299D2D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

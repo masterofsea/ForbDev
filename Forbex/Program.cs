@@ -1,11 +1,7 @@
-using Forbex.DAL.DbContexts;
-using Forbex.DAL.Repositories.Contracts;
-using Forbex.DAL.Repositories.Implementations;
-using Microsoft.AspNetCore.Builder;
+using ForbexDAL.DbContexts;
+using ForbexDAL.Repositories.Contracts;
+using ForbexDAL.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,9 +11,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ForbexDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("MainConnection")));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("MainConnection"), 
+        assembly => assembly.MigrationsAssembly(typeof(ForbexDbContext).Assembly.FullName)));
 
-builder.Services.AddTransient<IContractsRepository, EfContractsRepository>();
+builder.Services.AddSingleton<IContractsRepository, MockContractsRepository>();
 
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
@@ -25,6 +22,8 @@ builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
 var app = builder.Build();
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

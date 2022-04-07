@@ -23,28 +23,28 @@
     <RadzenBody>
       <ChildContent>
         <RadzenContentContainer Name="main">
+          <RadzenPanel Style="width: 90%; margin: 40px auto">
           @Body
+          </RadzenPanel>
         </RadzenContentContainer>
       </ChildContent>
     </RadzenBody>
-    <RadzenSidebar> 
+    <RadzenSidebar Visible="@_hidden"> 
       <ChildContent>
         <RadzenPanelMenu style="height: 100%">
           <ChildContent>
-            <RadzenPanelMenuItem Text="Договоры" Path="contracts"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Добавление договора" Path="сontractCreation"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Contracts" Path="contracts"></RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Contracts" Path="contracts"></RadzenPanelMenuItem>
+            <RadzenPanelMenuItem Text="Договоры" Path="contracts" Icon="book"/>
+            <RadzenPanelMenuItem Text="Добавление договора" Path="сontractAdd" Icon="add_circle"/>
           </ChildContent>
         </RadzenPanelMenu>
       </ChildContent>
     </RadzenSidebar>
-    <RadzenFooter>
-      <ChildContent>
-        <RadzenLabel Text="ForbexRadzen, Copyright Ⓒ 2022">
-        </RadzenLabel>
-      </ChildContent>
-    </RadzenFooter>
+    @* <RadzenFooter > *@
+    @*   <ChildContent> *@
+    @*     <RadzenLabel Text="ForbexRadzen, Copyright Ⓒ 2022"> *@
+    @*     </RadzenLabel> *@
+    @*   </ChildContent> *@
+    @* </RadzenFooter> *@
   </ChildContent>
 </RadzenLayout>
 

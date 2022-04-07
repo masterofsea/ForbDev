@@ -1,0 +1,100 @@
+﻿@page "/Mail/{ContractId:int}"
+@using System.Text
+@using ForbexDAL.Data
+@using ForbexDAL.Repositories.Contracts
+
+<PageTitle>Почта</PageTitle>
+
+<h1>Отправляем запиську с Id = @ContractId</h1>
+
+<RadzenContent Container="main">
+  <ChildContent>
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-md-2">
+        <RadzenLabel Text="Кому:">
+        </RadzenLabel>
+      </div>
+      <div class="col-md-10">
+        <RadzenTextBox style="width: 90%" Name="Textbox0">
+        </RadzenTextBox>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-md-2">
+        <RadzenLabel Text="Копия:">
+        </RadzenLabel>
+      </div>
+      <div class="col-md-10">
+        <RadzenTextBox style="width: 90%" Name="Textbox1">
+        </RadzenTextBox>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-md-2">
+        <RadzenLabel Text="Тема:">
+        </RadzenLabel>
+      </div>
+      <div class="col-md-10">
+        <RadzenTextBox style="width: 90%" Name="Textbox2">
+        </RadzenTextBox>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-md-2">
+        <RadzenLabel Text="Шаблон:">
+        </RadzenLabel>
+      </div>
+      <div class="col-md-10">
+        <RadzenDropDown style="width: 90%" Name="Dropdown0" TValue="string" Data="@Templates">
+        </RadzenDropDown>
+      </div>
+    </div>
+    <div class="row align-content-center" style="margin-bottom: 10px">
+      <div class="col-md-12">
+        <RadzenTextArea Placeholder="Текст письма" style="height: 250px; width: 91%" Name="Textarea0" Value="@Contract.Address">
+        </RadzenTextArea>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom: 10px">
+      <div class="col-md-3">
+        <RadzenButton Size="ButtonSize.Medium" style="background-color: #3830d5" Text="Отправить">
+        </RadzenButton>
+      </div>
+    </div>
+  </ChildContent>
+</RadzenContent>
+
+
+@code {
+    [Parameter]
+    public int ContractId { get; set; }
+    
+    [Inject]
+    IContractsRepository ContractsRepository { get; set; }
+
+    Contract? Contract { get; set; }
+  
+    IEnumerable<string> Templates { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Contract = await ContractsRepository.GetContractById(ContractId);
+
+        Templates = new List<string> 
+        { "Шаблон для отправки человека на хуй", 
+          "Шаблон чтобы спросить где бабки",
+          "Шаблон чтобы пригласить в суд и отжать бабки"};
+    }
+
+  enum Template
+  {
+    DefaultTemplate
+  }
+  
+  string GetLetterBody(Template template, Contract contract)
+  {
+    var strBuilder = new StringBuilder("");
+    return "";
+  }
+
+}

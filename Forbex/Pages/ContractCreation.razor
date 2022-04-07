@@ -1,72 +1,359 @@
-﻿@page "/сontractCreation"
-@using Forbex.DAL.Data
+﻿@page "/сontractAdd"
+
+@using ForbexDAL.Data
+@using ForbexDAL.Repositories.Contracts
+@using System.Text
+
+@layout MainLayout
 
 <style>
-    form .row {
+    .row {
         margin-bottom: 16px;
-        margin-top: 16px;
     }
 </style>
 
-<PageTitle>Создание договора</PageTitle>
 
-<RadzenSteps @bind-SelectedIndex="@_selectedIndex" Change="@OnChange">
-    <Steps>
-        <RadzenStepsItem Text="Договор">
-            <RadzenTemplateForm TItem="Contract" Data="@Model" Submit="@SaveContract">
-                <RadzenFieldset Text="Purchase Info">
-                    <div class="row">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Адрес" />
-                        </div>
-                        <div class="col-md-8">
-                            <RadzenTextBox style="width: 100%;" Name="Address" @bind-Value="@Model.Address" />
-                        </div>
+<ChildContent>
+<RadzenSteps ShowStepsButtons="true">
+<Steps>
+<RadzenTemplateForm Data="@Model" Submit="@(async (Contract args) => { await SaveContract(args); })">
+<RadzenStepsItem Disabled="false" Selected="false" Text="Аренда">
+    <ChildContent>
+        <RadzenFieldset>
+            <HeaderTemplate>
+                Информация о договоре аренды
+            </HeaderTemplate>
+            <ChildContent>
+                <div class="row">
+                    <div class="col-md-10">
+                        <RadzenTextBox Placeholder="Адрес" Name="Address" Style="width: 100%" @bind-value="@Model.Address"/>
+                        <RadzenRequiredValidator Component="Address" Text="Address is required"/>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="Дата заключения" />
-                        </div>
-                        <div class="col-md-8">
-                            <RadzenDatePicker style="width: 100%;" Name="ConclusionDate" @bind-Value="Model.ConclusionDate" />
-                        </div>
+                    <div class="col-md-2">
+                        <RadzenTextBox Placeholder="ИФНС" ReadOnly="true" Name="Ifts" @bind-value="@Model.Ifts"/>
                     </div>
-                                
-                    <div class="row col-md-6">
-                        <div class="col-md-4 align-items-center d-flex">
-                            <RadzenLabel Text="ИФНС" />
-                        </div>
-                        <div class="col-md-8">
-                            <RadzenTextBox style="width: 100%;" Name="Ifts" @bind-Value="Model.Ifts" />
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <RadzenLabel Component="ConclusionDate" Text="Дата заключения"/>
+                        <RadzenDatePicker Name="ConclusionDate" TValue="DateTime?" @bind-value="@Model.ConclusionDate"/>
                     </div>
-                    <div class="row col-3">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Сохранить"/>
+                    <div class="col-md-7 align-items-left">
+
                     </div>
-                </RadzenFieldset>
-            </RadzenTemplateForm>
-        </RadzenStepsItem>
-        
-        
-        <RadzenStepsItem Text="Orders">
-            Orders
-        </RadzenStepsItem>
-        <RadzenStepsItem Text="Order Details">
-            Order Details
-        </RadzenStepsItem>
-    </Steps>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <RadzenLabel Component="LeaseStartDate" style="width: 225.578125px" Text="Дата начала аренды"/>
+                    </div>
+                    <div class="col-md-7">
+                        <RadzenDatePicker style="width: 487px" Name="LeaseStartDate" TValue="DateTime?" @bind-value="@Model.LeaseStartDate"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <RadzenLabel Component="LeaseEndDate" style="width: 212.3125px" Text="Дата окончания аренды"/>
+                    </div>
+                    <div class="col-md-7">
+                        <RadzenDatePicker style="width: 441px" Name="LeaseEndDate" TValue="DateTime?" @bind-value="@Model.LeaseEndDate"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <RadzenNumeric Placeholder="Срок действия договора" Name="LeaseTerm" TValue="int?" @bind-value="@Model.LeaseTerm"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <RadzenNumeric Placeholder="Цена 1" style="width: 100%" TValue="decimal?" Name="Price1" @bind-value="@Model.Price1"/>
+                    </div>
+                    <div class="col-md-3">
+                        <RadzenNumeric Placeholder="Цена 2" style="width: 100%" TValue="decimal?" Name="Price2" @bind-value="@Model.Price2"/>
+                    </div>
+                    <div class="col-md-3">
+                        <RadzenNumeric Placeholder="Штраф" style="width: 100%" TValue="decimal?" Name="Penalty" @bind-value="@Model.Penalty"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <RadzenLabel style="width: 254.375px" Text="Тип регистрации" Component="RegistrationType"/>
+                    </div>
+                    <div class="col-md-7">
+                        @* <RadzenDropDown style="display: inline-block; height: 34px; margin-top: 0px; width: 100%" Name="RegistrationType" TValue="string" *@
+                        @*                 Data="@RegistrationTypes" *@
+                        @*                 @bind-value="@Model.RegistrationType"> *@
+                        @* </RadzenDropDown> *@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <RadzenLabel style="display: inline-block; width: 70%" Text="Возвратный экземпляр" Component="IsReturnableCopy"/>
+                        <RadzenCheckBox style="display: inline-block; width: 23px" Name="IsReturnableCopy" TriState="false" TValue="bool" @bind-value="@Model.IsReturnableCopy"/>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenLabel style="display: inline-block; position: relative; text-align: left; vertical-align: baseline; width: 60%" Text="Ежемесячные акты"
+                                     Component="MonthlyActs"/>
+                        <RadzenCheckBox style="display: inline-block" Name="MonthlyActs" TriState="false" TValue="bool" @bind-value="@Model.MonthlyActs"/>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenLabel style="width: 15%" Text="Чек" Component="Receipt"/>
+                        <RadzenCheckBox Name="Receipt" TriState="false" TValue="bool" @bind-value="@Model.Receipt"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <RadzenLabel style="width: 255.09375px" Text="Форма оплаты"/>
+                    </div>
+                    <div class="col-md-7">
+                        @* <RadzenDropDown style="width: 100%" Name="Dropdown1" TValue="string" Data="@Enum.GetValues(typeof(PaymentForm))"> *@
+                        @* </RadzenDropDown> *@
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <RadzenLabel style="width: 25%" Text="Оплата" Component="Paid"/>
+                        <RadzenCheckBox Name="Paid" TriState="false" TValue="bool" @bind-Value="@Model.Paid"/>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenLabel style="width: 65%" Text="Хранение документов" Component="DocumentsStorage"/>
+                        <RadzenCheckBox Name="DocumentsStorage" TriState="false" TValue="bool" @bind-Value="@Model.DocumentsStorage"/>
+
+                    </div>
+                </div>
+            </ChildContent>
+        </RadzenFieldset>
+    </ChildContent>
+</RadzenStepsItem>
+<RadzenStepsItem Selected="false" Text="Партнер">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-7">
+                <RadzenLabel style="width: 20%" Text="Партнёр"/>
+                <RadzenCheckBox Name="hasPartner" TriState="false" TValue="bool" @bind-Value="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Выбрать партнёра"/>
+            </div>
+            <div class="col-md-9">
+                <RadzenDropDown style="width: 100%" Name="Dropdown2" TValue="dynamic" Disabled="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Id:"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenNumeric style="width: 100%" Name="Textbox5" TValue="int" @bind-Value="@Model.Partner.Id" Disabled="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Партнёр:"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%" Name="PartnerName" @bind-Value="@Model.Partner.Name" Disabled="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenLabel style="width: 25%" Text="Телефон:" Component="PartnerPhone"/>
+                <RadzenTextBox style="width: 288px" Name="PartnerPhone" @bind-Value="@Model.Partner.Phone" Disabled="@hasPartner"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenLabel style="width: 20%" Text="E-mail:" Component="PartnerEmail"/>
+                <RadzenTextBox style="width: 325px" Name="PartnerEmail" @bind-Value="@Model.Partner.Email" Disabled="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дополнительные контакты:"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%" Name="Textbox9" Disabled="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Контактное лицо:"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%" Name="PartnerContactName" @bind-Value="@Model.Partner.ContactName" Disabled="@hasPartner"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Тип должности:"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%" Name="Textbox11" Disabled="@hasPartner"/>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenStepsItem>
+<RadzenStepsItem Selected="false" Text="Арендатор">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Выбрать арендатора:"/>
+            </div>
+            <div class="col-md-8">
+                @* <RadzenDropDown style="width: 100%" Name="Dropdown3" TValue="dynamic" @bind-Value="@Model.DocumentsStorage"> *@
+                @* </RadzenDropDown> *@
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <RadzenLabel Text="Организационно-правовая форма:"/>
+            </div>
+            <div class="col-md-7">
+                @* <RadzenDropDown style="width: 100%" Name="Dropdown4" TValue="dynamic"> *@
+                @* </RadzenDropDown> *@
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <RadzenTextBox Placeholder="Полное название:" style="width: 100%" Name="Name" @bind-Value="@Model.Lessee.Name"/>
+            </div>
+            <div class="col-md-4">
+                <RadzenTextBox Placeholder="Короткое название:" style="width: 100%" Name="ShortName" @bind-Value="@Model.Lessee.ShortName"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenLabel Text="Телефон:" Component="Phone"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenTextBox Name="Phone" @bind-Value="@Model.Lessee.Phone"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="E-mail:" Component="Email"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenTextBox Name="Email" @bind-Value="@Model.Lessee.Email"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <RadzenLabel Text="Дополнительные контакты:"/>
+            </div>
+            <div class="col-md-7">
+                <RadzenTextBox style="width: 100%" Name="AdditionalContacts" @bind-Value="@Model.Lessee.AdditionalContacts"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenTextBox Placeholder="Контактное лицо:" style="width: 100%" Name="ContactName" @bind-Value="@Model.Lessee.ContactName"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenTextBox Placeholder="Тип должности:" style="width: 100%" Name="ContactNamePosition" @bind-Value="@Model.Lessee.ContactNamePosition"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenTextBox Placeholder="Руководитель:" style="width: 100%" Name="Textbox19"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenTextBox Placeholder="Тип должности:" style="width: 100%" Name="Textbox20"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTextBox Placeholder="Реквизиты" style="width: 100%" Name="Bank" @bind-Value="@Model.Lessee.Kpp"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenTextBox Placeholder="Банк" style="width: 100%" Name="Bank" @bind-Value="@Model.Lessee.Bank"/>
+            </div>
+            <div class="col-md-4">
+                <RadzenTextBox Placeholder="ИНН" style="width: 100%" Name="Inn" @bind-Value="@Model.Lessee.Inn"/>
+            </div>
+            <div class="col-md-4">
+                <RadzenTextBox Placeholder="БИК" style="width: 100%" Name="Bic" @bind-Value="@Model.Lessee.Bic"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenTextBox Placeholder="Р/С" style="width: 100%" Name="CheckingAccount" @bind-Value="@Model.Lessee.CheckingAccount"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenTextBox Placeholder="ОГРН" style="width: 100%" Name="Ogrn" @bind-Value="@Model.Lessee.Ogrn"/>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenStepsItem>
+<RadzenStepsItem Selected="false" Text="Почта">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenLabel style="width: 50%" Text="Почтовое обслувживание:"/>
+                <RadzenCheckBox Name="Checkbox6" TValue="bool"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дата заключения договора ПО:"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenDatePicker style="width: 100%" Name="MailContractConclusionDate" TValue="DateTime?" @bind-Value="@Model.MailContract.ConclusionDate"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дата начала договора ПО:"/>
+            </div>
+            <div class="col-md-6" style="height: 100%">
+                <RadzenDatePicker style="width: 100%" Name="MailContractLeaseBeginDate" TValue="DateTime?" @bind-Value="@Model.MailContract.LeaseBeginDate"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дата окончания договора ПО:"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenDatePicker style="width: 100%" Name="MailContractLeaseEndDate" TValue="DateTime?" @bind-Value="@Model.MailContract.LeaseEndDate"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Срок:" Component="MailContractLeaseTerm"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenNumeric style="width: 100%" Name="MailContractLeaseTerm" TValue="int?" @bind-Value="@Model.MailContract.LeaseTerm"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenNumeric Placeholder="Цена ПО 1:" style="width: 100%" Name="MailContractPrice1" TValue="decimal?" @bind-Value="@Model.MailContract.Price1"/>
+            </div>
+            <div class="col-md-4">
+                <RadzenNumeric Placeholder="Цена ПО 2:" style="width: 100%" Name="MailContractPrice2" TValue="decimal?" @bind-Value="@Model.MailContract.Price2"/>
+            </div>
+        </div>
+        <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />
+    </ChildContent>
+</RadzenStepsItem>
+</RadzenTemplateForm>
+</Steps>
 </RadzenSteps>
+</ChildContent>
+
 
 @code {
-    int _selectedIndex;
+    [Inject]
+    IContractsRepository ContractsRepository { get; set; } = null!;
+
     Contract Model { get; } = new();
-    void OnChange(int index)
+
+    bool hasPartner;
+
+    //IEnumerable<string> RegistrationTypes => Enum.GetNames<PaymentForm>();
+
+    async Task SaveContract(Contract contract)
     {
-        Console.WriteLine($"Step with index {index} was selected.");
+        await ContractsRepository.AddContractAsync(contract);
     }
 
-    void SaveContract(Contract contract)
-    {
-        
-    }
 }
