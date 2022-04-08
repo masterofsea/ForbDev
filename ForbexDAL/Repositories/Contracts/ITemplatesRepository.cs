@@ -1,4 +1,6 @@
-﻿namespace ForbexDAL.Repositories.Contracts;
+﻿using System.Threading.Tasks;
+
+namespace ForbexDAL.Repositories.Contracts;
 
 /// <summary>
 /// Репозиторий получения шаблонов для писем

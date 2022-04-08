@@ -1,4 +1,6 @@
-﻿namespace ForbexBAL.MailBox.MailSending.MessageBuilding.Contracts;
+﻿using System.Threading.Tasks;
+
+namespace ForbexBAL.MailBox.MailSending.MessageBuilding.Contracts;
 
 public interface IMessageBuilder
 {
