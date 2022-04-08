@@ -52,21 +52,22 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="Partner" Title="Партнер">
             <Template Context="data">
-                @if (data.Paid)
-                {
-                    <RadzenBadge Style="width: 80%; height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО" />
-                }
-                else
-                {
-                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО" />
-                }
+                @if (!string.IsNullOrEmpty(data.Partner.Name))
+                                {
+                                     <RadzenButton Click="@(async _ => await OpenPartner(data.Partner))" Icon="person" Text="@data.Partner.Name"/>
+                                }
+                                else
+                                {
+                                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="Нет партнёра" />
+                                }
+                
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="MailContract" Title="Договор ПО">
             <Template Context="data">
                 @if (!string.IsNullOrEmpty(data.MailContract.MailContractNumber))
                 {
-                    <p><RadzenIcon Icon="mark_email_read" />@data.MailContract.MailContractNumber</p>
+                    <RadzenButton Click="@(async _ => await OpenMailContract(data.MailContract))" Icon="person" Text="@data.MailContract.MailContractNumber"/>
                 }
                 else
                 {
@@ -125,6 +126,20 @@
     {
         await DialogService.OpenAsync<LesseeCardPage>(lessee.Name, 
             new Dictionary<string, object> { { "Lessee", lessee } },
-            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
+            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
+    }
+    
+    private async Task OpenPartner(Partner partner)
+    {
+        await DialogService.OpenAsync<PartnerCardPage>(partner.Name, 
+            new Dictionary<string, object> { { "Partner", partner } },
+            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
+    }
+    
+    private async Task OpenMailContract(MailContract mailcontract)
+    {
+        await DialogService.OpenAsync<MailContractCardPage>(mailcontract.MailContractNumber, 
+            new Dictionary<string, object> { { "MailContract", mailcontract } },
+            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
     }
 }

@@ -48,6 +48,7 @@ public class MailContract
 
     public static MailContract EmptyMailContract { get; } = new();
 
+    
     public override string ToString()
     {
         return MailContractNumber;

@@ -1,16 +1,16 @@
-@using ForbexDAL.Data
-@page "/LesseeCardPage/{Lessee}"
+﻿@using ForbexDAL.Data
+@page "/MailContractCardPage/{MailContract}"
 
 @inject DialogService dialogService
 
 <div class="row">
     <div class="col-lg-6 d-flex">
         <RadzenCard Style="width: 100%; overflow: hidden;">
-            <h3 class="h5">Данные об арендаторе</h3>
+            <h3 class="h5">Данные о договоре почтового обслуживания</h3>
             <div class="d-flex flex-row">
                 <div>
-                    <div>Сокращенное название компании</div>
-                    <b>@Lessee.OrganizationLegalFormShort + @Lessee.ShortName</b>
+                    <div>Номер договора</div>
+                    <b>@MailContract.MailContractNumber</b>
                     <!--<div class="mt-3">Организационно-правовая форма сокращенно</div>
                     <b></b>-->
                 </div>
@@ -22,10 +22,12 @@
             <h3 class="h5">Контакты</h3>
             <div class="row">
                 <div class="col">
-                    <div>E-mail</div>
-                    <b>@Lessee.Email</b>
-                    <div class="mt-3">Телефон</div>
-                    <b>@Lessee.Phone</b>
+                    <div>Дата заключения договора</div>
+                    <b>@MailContract.ConclusionDate</b>
+                    <div class="mt-3">Дата начала действия договора</div>
+                    <b>@MailContract.LeaseBeginDate</b>
+                    <div class="mt-3">Дата окончания действия договора</div>
+                    <b>@MailContract.LeaseEndDate</b>
                 </div>
             </div>
         </RadzenCard>
@@ -56,9 +58,8 @@
     </div>
 </div>
 
+
 @code {
-
     [Parameter]
-    public Lessee Lessee { get; set; } = null!;
-
+    public MailContract MailContract { get; set; } = null!;
 }
