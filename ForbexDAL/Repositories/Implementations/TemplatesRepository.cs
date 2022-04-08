@@ -1,11 +1,24 @@
-﻿using ForbexDAL.Repositories.Contracts;
+﻿using ForbexDAL.Data;
+using ForbexDAL.DbContexts;
+using ForbexDAL.Repositories.Contracts;
+using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ForbexDAL.Repositories.Implementations;
 
+[UsedImplicitly]
 public class TemplatesRepository : ITemplatesRepository
 {
-    public Task<string> GetTemplateByName(string templateName)
+    private ForbexDbContext Context { get; }
+
+    public TemplatesRepository(ForbexDbContext context)
     {
-        throw new NotImplementedException();
+        Context = context;
+    }
+    
+    public async Task<Template> GetTemplateByName(string templateName)
+    {
+        //TODO правильное сравнение строк организовать
+        return await Context.Templates.FirstAsync(i => i.Name == templateName);
     }
 }

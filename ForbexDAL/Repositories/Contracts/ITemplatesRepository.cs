@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-
+using ForbexDAL.Data;
 namespace ForbexDAL.Repositories.Contracts;
 
 /// <summary>
@@ -12,5 +11,5 @@ public interface ITemplatesRepository
     /// </summary>
     /// <param name="templateName">Имя шаблона</param>
     /// <returns>Шаблон письма</returns>
-    Task<string> GetTemplateByName(string templateName);
+    Task<Template> GetTemplateByName(string templateName);
 }

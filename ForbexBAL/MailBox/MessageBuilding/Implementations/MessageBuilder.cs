@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
-using ForbexBAL.MailBox.MailSending.MessageBuilding.Contracts;
+using ForbexBAL.MailBox.MessageBuilding.Contracts;
 using ForbexDAL.Repositories.Contracts;
 
 namespace ForbexBAL.MailBox.MessageBuilding.Implementations;

@@ -11,36 +11,79 @@
 @*     <NavLink class="btn btn-sm btn-info" href="@GetMailUri(SelectedContracts.First().Id)"> *@
 @*         Отправить письмо *@
 @*     </NavLink> *@
-@* } *@
 
-<h1>Таблица</h1>
-
+<style>
+    table {
+      table-layout: auto !important;
+      text-align: center;
+    }
+</style>
 <RadzenDataGrid @ref="contractsGrid" Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="20"
                 AllowSorting="true" AllowMultiColumnSorting="true"
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
                 SelectionMode="DataGridSelectionMode.Single" @bind-Value="@SelectedContracts"
-                AllowColumnResize="true">
-    
+                AllowColumnResize="false">
     <Columns>
-        <RadzenDataGridColumn TItem="Contract" Property="Id" Title="Id"/>
         <FooterTemplate>
-            Displayed orders: <b>@contractsGrid.View.Count().ToString()</b> of <b>@Contracts.Count().ToString()</b>
+            Displayed orders: <b>@contractsGrid.View.Count().ToString()</b> of <b>@Contracts?.Count().ToString()</b>
         </FooterTemplate>
-        <RadzenDataGridColumn TItem="Contract" Property="Ifts" Title="Ifts"/>
-        <RadzenDataGridColumn TItem="Contract" Property="Address" Title="Address"/>
-        <RadzenDataGridColumn TItem="Contract" Property="ConclusionDate" Title="ConclusionDate"/>
-        <RadzenDataGridColumn TItem="Contract" Property="ContractNumber" Title="ContractNumber"/>
-        <RadzenDataGridColumn TItem="Contract" Property="LeaseStartDate" Title="LeaseStartDate"/>
+        <RadzenDataGridColumn TItem="Contract" Property="ContractNumber" Title="Номер"/>
+        <RadzenDataGridColumn TItem="Contract" Property="ConclusionDate" Title="Дата заключения" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Contract" Property="LeaseStartDate" Title="Дата начала" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Contract" Property="LeaseEndDate" Title="Дата окончания" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Contract" Property="LeaseTerm" Title="Срок"/>
+        <RadzenDataGridColumn TItem="Contract" Property="Address" Title="Адрес"/>
+        <RadzenDataGridColumn TItem="Contract" Property="Paid" Title="Оплачено">
+            <Template Context="data">
+                @if (data.Paid)
+                {
+                     <RadzenBadge Style="width: 80%; height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО" />
+                }
+                else
+                {
+                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="Lessee" Title="Арендатор">
+            <Template Context="data">
+                <RadzenButton Click="@(async _ => await OpenLessee(data.Lessee))" Icon="person" Text="@data.Lessee.Name"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="Partner" Title="Партнер">
+            <Template Context="data">
+                @if (data.Paid)
+                {
+                    <RadzenBadge Style="width: 80%; height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО" />
+                }
+                else
+                {
+                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="MailContract" Title="Договор ПО">
+            <Template Context="data">
+                @if (!string.IsNullOrEmpty(data.MailContract.MailContractNumber))
+                {
+                    <p><RadzenIcon Icon="mark_email_read" />@data.MailContract.MailContractNumber</p>
+                }
+                else
+                {
+                    <p style="color: #a5b9ea"><RadzenIcon Icon="mail_outline"/> Отсутствует</p>
+                }
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
             <Template Context="contract">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(contract))"
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(_ => DeleteRow(contract))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="60px">
             <Template Context="contract">
-                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" Click="@(args => GoToLetterCreation(contract.Id))"
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" Click="@(_ => GoToLetterCreation(contract.Id))"
                               @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>
@@ -51,11 +94,12 @@
 @code
 {
     RadzenDataGrid<Contract> contractsGrid;
-    
     [Inject]
     IContractsRepository ContractsRepository { get; set; }
     [Inject]
     NavigationManager NavManager { get; set; }
+    [Inject]
+    DialogService DialogService { get; set; }
     
     IEnumerable<Contract?>? Contracts { get; set; }
     IList<Contract>? SelectedContracts { get; set; }
@@ -65,15 +109,22 @@
         Contracts = ContractsRepository.GetAllContracts();
     }
 
-    async Task DeleteRow(Contract contract)
+    private async Task DeleteRow(Contract contract)
     {
         await ContractsRepository.RemoveContractAsync(contract);
         
         await contractsGrid.Reload();
     }
 
-    void GoToLetterCreation(int contractId)
+    private void GoToLetterCreation(int contractId)
     {
         NavManager.NavigateTo($"Mail/{contractId}");
+    }
+
+    private async Task OpenLessee(Lessee lessee)
+    {
+        await DialogService.OpenAsync<LesseeCardPage>(lessee.Name, 
+            new Dictionary<string, object> { { "Lessee", lessee } },
+            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = true });
     }
 }

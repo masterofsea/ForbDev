@@ -14,11 +14,11 @@ public class Lessee
     /// Уникальный идентификатор арендатора
     /// </summary>
     public int Id { get; set; }
-        
+
     /// <summary>
     /// Наименование арендатора
     /// </summary>
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
         
     /// <summary>
     /// Краткое наименование арендатора
@@ -92,8 +92,15 @@ public class Lessee
     public OrganizationLegalForm OrganizationLegalForm => (OrganizationLegalForm) OrganizationLegalFormShort;
     
     public static Lessee EmptyLessee { get; } = new();
+    
+    
+    public override string ToString()
+    {
+        return Name;
+    }
 }
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public enum OrganizationLegalFormShort
 {
     [Description("ОАО")]
@@ -106,6 +113,7 @@ public enum OrganizationLegalFormShort
     ZAO,
 }
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public enum OrganizationLegalForm
 {
     [Description("Объединенное акционерное общество")]

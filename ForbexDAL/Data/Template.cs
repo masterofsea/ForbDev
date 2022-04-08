@@ -21,5 +21,5 @@ public class Template
     /// <summary>
     /// Тело шаблона
     /// </summary>
-    private string Body { get; set; } = null!;
+    public string Body { get; set; } = null!;
 }

@@ -65,13 +65,13 @@
                 </div>
                 <div class="row">
                     <div class="col-md-3">
-                        <RadzenNumeric Placeholder="Цена 1" style="width: 100%" TValue="decimal?" Name="Price1" @bind-value="@Model.Price1"/>
+                        <RadzenNumeric Placeholder="Цена 1" ShowUpDown="false" style="width: 100%" TValue="decimal?" Name="Price1" @bind-value="@Model.Price1"/>
                     </div>
                     <div class="col-md-3">
-                        <RadzenNumeric Placeholder="Цена 2" style="width: 100%" TValue="decimal?" Name="Price2" @bind-value="@Model.Price2"/>
+                        <RadzenNumeric Placeholder="Цена 2" ShowUpDown="false" style="width: 100%" TValue="decimal?" Name="Price2" @bind-value="@Model.Price2"/>
                     </div>
                     <div class="col-md-3">
-                        <RadzenNumeric Placeholder="Штраф" style="width: 100%" TValue="decimal?" Name="Penalty" @bind-value="@Model.Penalty"/>
+                        <RadzenNumeric Placeholder="Штраф" ShowUpDown="false" style="width: 100%" TValue="decimal?" Name="Penalty" @bind-value="@Model.Penalty"/>
                     </div>
                 </div>
                 <div class="row">
@@ -145,7 +145,7 @@
                 <RadzenLabel Text="Id:"/>
             </div>
             <div class="col-md-8">
-                <RadzenNumeric style="width: 100%" Name="Textbox5" TValue="int" @bind-Value="@Model.Partner.Id" Disabled="@hasPartner"/>
+                <RadzenNumeric style="width: 100%" ShowUpDown="false" Name="Textbox5" TValue="int" @bind-Value="@Model.Partner.Id" Disabled="@hasPartner"/>
             </div>
         </div>
         <div class="row">
@@ -321,15 +321,15 @@
                 <RadzenLabel Text="Срок:" Component="MailContractLeaseTerm"/>
             </div>
             <div class="col-md-6">
-                <RadzenNumeric style="width: 100%" Name="MailContractLeaseTerm" TValue="int?" @bind-Value="@Model.MailContract.LeaseTerm"/>
+                <RadzenNumeric style="width: 100%" ShowUpDown="false" Name="MailContractLeaseTerm" TValue="int?" @bind-Value="@Model.MailContract.LeaseTerm"/>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <RadzenNumeric Placeholder="Цена ПО 1:" style="width: 100%" Name="MailContractPrice1" TValue="decimal?" @bind-Value="@Model.MailContract.Price1"/>
+                <RadzenNumeric Placeholder="Цена ПО 1:" ShowUpDown="false" style="width: 100%" Name="MailContractPrice1" TValue="decimal?" @bind-Value="@Model.MailContract.Price1"/>
             </div>
             <div class="col-md-4">
-                <RadzenNumeric Placeholder="Цена ПО 2:" style="width: 100%" Name="MailContractPrice2" TValue="decimal?" @bind-Value="@Model.MailContract.Price2"/>
+                <RadzenNumeric Placeholder="Цена ПО 2:" ShowUpDown="false" style="width: 100%" Name="MailContractPrice2" TValue="decimal?" @bind-Value="@Model.MailContract.Price2"/>
             </div>
         </div>
         <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" />

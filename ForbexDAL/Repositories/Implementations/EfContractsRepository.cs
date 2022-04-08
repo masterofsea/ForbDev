@@ -9,10 +9,8 @@ namespace ForbexDAL.Repositories.Implementations;
 [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
 public class EfContractsRepository : IContractsRepository
 {
-    [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
     private ForbexDbContext Context { get; }
-        
-        
+
     public EfContractsRepository(ForbexDbContext context)
     {
         Context = context;

@@ -16,10 +16,11 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ForbexDbContext>(opt =>
 
 builder.Services.AddSingleton<IContractsRepository, MockContractsRepository>();
 
-builder.Services.AddScoped<DialogService>();
+
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
+builder.Services.AddScoped<DialogService>();
 
 var app = builder.Build();
 
