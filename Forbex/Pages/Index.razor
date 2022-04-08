@@ -18,14 +18,14 @@
       text-align: center;
     }
 </style>
-<RadzenDataGrid @ref="contractsGrid" Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="20"
+<RadzenDataGrid @ref="_contractsGrid" Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="20"
                 AllowSorting="true" AllowMultiColumnSorting="true"
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
                 SelectionMode="DataGridSelectionMode.Single" @bind-Value="@SelectedContracts"
                 AllowColumnResize="false">
     <Columns>
         <FooterTemplate>
-            Displayed orders: <b>@contractsGrid.View.Count().ToString()</b> of <b>@Contracts?.Count().ToString()</b>
+            Displayed orders: <b>@_contractsGrid.View.Count().ToString()</b> of <b>@Contracts?.Count().ToString()</b>
         </FooterTemplate>
         <RadzenDataGridColumn TItem="Contract" Property="ContractNumber" Title="Номер"/>
         <RadzenDataGridColumn TItem="Contract" Property="ConclusionDate" Title="Дата заключения" FormatString="{0:d}"/>
@@ -94,14 +94,15 @@
 
 @code
 {
-    RadzenDataGrid<Contract> contractsGrid;
     [Inject]
-    IContractsRepository ContractsRepository { get; set; }
+    IContractsRepository ContractsRepository { get; set; } = null!;
     [Inject]
-    NavigationManager NavManager { get; set; }
+    NavigationManager NavManager { get; set; } = null!;
     [Inject]
-    DialogService DialogService { get; set; }
+    DialogService DialogService { get; set; } = null!;
     
+    
+    RadzenDataGrid<Contract> _contractsGrid = null!;
     IEnumerable<Contract?>? Contracts { get; set; }
     IList<Contract>? SelectedContracts { get; set; }
 
@@ -114,13 +115,10 @@
     {
         await ContractsRepository.RemoveContractAsync(contract);
         
-        await contractsGrid.Reload();
+        await _contractsGrid.Reload();
     }
 
-    private void GoToLetterCreation(int contractId)
-    {
-        NavManager.NavigateTo($"Mail/{contractId}");
-    }
+    private void GoToLetterCreation(int contractId) => NavManager.NavigateTo($"Mail/{contractId}");
 
     private async Task OpenLessee(Lessee lessee)
     {
@@ -136,10 +134,10 @@
             new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
     }
     
-    private async Task OpenMailContract(MailContract mailcontract)
+    private async Task OpenMailContract(MailContract mailContract)
     {
-        await DialogService.OpenAsync<MailContractCardPage>(mailcontract.MailContractNumber, 
-            new Dictionary<string, object> { { "MailContract", mailcontract } },
+        await DialogService.OpenAsync<MailContractCardPage>(mailContract.MailContractNumber, 
+            new Dictionary<string, object> { { "MailContract", mailContract } },
             new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
     }
 }

@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForbexDAL", "ForbexDAL\Forb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForbexBAL", "ForbexBAL\ForbexBAL.csproj", "{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TempTest", "TempTest\TempTest.csproj", "{EE568A67-75A4-402E-827E-8573BD94CBA0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +24,5 @@ Global
 		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDBE86F4-8578-4BFC-96F5-72CC7BAAE809}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE568A67-75A4-402E-827E-8573BD94CBA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE568A67-75A4-402E-827E-8573BD94CBA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE568A67-75A4-402E-827E-8573BD94CBA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE568A67-75A4-402E-827E-8573BD94CBA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
