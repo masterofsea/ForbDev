@@ -12,11 +12,11 @@ public class MailContract
     /// Уникальный идентификатор договора почтового обслуживания
     /// </summary>
     public int Id { get; set; }
-        
+
     /// <summary>
     /// Номер договора почтового обслуживания
     /// </summary>
-    public string? MailContractNumber { get; set; }
+    public string MailContractNumber { get; set; } = null!;
         
     /// <summary>
     /// Дата заключения договора почтового обслуживания
@@ -46,4 +46,9 @@ public class MailContract
     public string? Responsible { get; set; }
 
     public static MailContract EmptyMailContract { get; } = new();
+
+    public override string ToString()
+    {
+        return MailContractNumber;
+    }
 }

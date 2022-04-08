@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using ForbexBAL.MailBox.MailSending.MessageBuilding.Contracts;
+using ForbexBAL.MailBox.MessageBuilding.Contracts;
 using ForbexDAL.Repositories.Contracts;
 
-namespace ForbexBAL.MailBox.MailSending.MessageBuilding.Implementations;
+namespace ForbexBAL.MailBox.MessageBuilding.Implementations;
 
 public class MessageBuilder : IMessageBuilder
 {
@@ -15,7 +15,7 @@ public class MessageBuilder : IMessageBuilder
     
     public async Task<string> BuildMessage(string messageTemplateName, object messageData)
     {
-        var builder = new StringBuilder(await TemplatesRepository.GetTemplateByName(messageTemplateName));
+        var builder = new StringBuilder((await TemplatesRepository.GetTemplateByName(messageTemplateName)).Body);
 
         //Здесь нужно написать алгоритм приведения шаблона к письму
         

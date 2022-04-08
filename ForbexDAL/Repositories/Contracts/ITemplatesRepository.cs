@@ -1,4 +1,6 @@
-﻿namespace ForbexDAL.Repositories.Contracts;
+﻿using ForbexDAL.Data;
+
+namespace ForbexDAL.Repositories.Contracts;
 
 /// <summary>
 /// Репозиторий получения шаблонов для писем
@@ -10,5 +12,5 @@ public interface ITemplatesRepository
     /// </summary>
     /// <param name="templateName">Имя шаблона</param>
     /// <returns>Шаблон письма</returns>
-    Task<string> GetTemplateByName(string templateName);
+    Task<Template> GetTemplateByName(string templateName);
 }

@@ -12,11 +12,11 @@ public class Partner
     /// Уникальный идентификатор партнера
     /// </summary>
     public int Id { get; set; }
-        
+
     /// <summary>
     /// Имя партнера
     /// </summary>
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
 
     /// <summary>
     /// Email партнера
@@ -34,4 +34,9 @@ public class Partner
     public string? ContactName { get; set; }
 
     public static Partner EmptyPartner { get; }= new();
+    
+    public override string ToString()
+    {
+        return Name;
+    }
 }

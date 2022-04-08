@@ -1,4 +1,4 @@
-﻿namespace ForbexBAL.MailBox.MailSending.MessageBuilding.Contracts;
+﻿namespace ForbexBAL.MailBox.MessageBuilding.Contracts;
 
 public interface IMessageBuilder
 {

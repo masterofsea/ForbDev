@@ -20,6 +20,17 @@ public class MockContractsRepository : IContractsRepository
                 ConclusionDate = DateTime.Now - TimeSpan.FromDays(i),
                 ContractNumber = rnd.Next().ToString(),
                 LeaseStartDate = DateTime.UnixEpoch + TimeSpan.FromDays(i),
+                LeaseEndDate = DateTime.UnixEpoch + TimeSpan.FromDays(i + 147),
+                LeaseTerm = 147,
+                Paid = i % 3 != 0,
+                Lessee = new Lessee
+                {
+                    Name = $"{rnd.Next()} ИМЯ"
+                },
+                MailContract = i % 5 == 0 ? new MailContract
+                {
+                    MailContractNumber = rnd.Next().ToString()
+                } : new MailContract()
             });
         }
     }
