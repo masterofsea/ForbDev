@@ -37,11 +37,11 @@
             <Template Context="data">
                 @if (data.Paid)
                 {
-                     <RadzenBadge Style="width: 80%; height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО" />
+                    <RadzenBadge Style="width: 80%; height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО"/>
                 }
                 else
                 {
-                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО" />
+                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО"/>
                 }
             </Template>
         </RadzenDataGridColumn>
@@ -53,14 +53,13 @@
         <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="Partner" Title="Партнер">
             <Template Context="data">
                 @if (!string.IsNullOrEmpty(data.Partner.Name))
-                                {
-                                     <RadzenButton Click="@(async _ => await OpenPartner(data.Partner))" Icon="person" Text="@data.Partner.Name"/>
-                                }
-                                else
-                                {
-                                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="Нет партнёра" />
-                                }
-                
+                {
+                    <RadzenButton Click="@(async _ => await OpenPartner(data.Partner))" Icon="person" Text="@data.Partner.Name"/>
+                }
+                else
+                {
+                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="Нет партнёра"/>
+                }
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="MailContract" Title="Договор ПО">
@@ -96,12 +95,14 @@
 {
     [Inject]
     IContractsRepository ContractsRepository { get; set; } = null!;
+
     [Inject]
     NavigationManager NavManager { get; set; } = null!;
+
     [Inject]
     DialogService DialogService { get; set; } = null!;
-    
-    
+
+
     RadzenDataGrid<Contract> _contractsGrid = null!;
     IEnumerable<Contract?>? Contracts { get; set; }
     IList<Contract>? SelectedContracts { get; set; }
@@ -114,7 +115,7 @@
     private async Task DeleteRow(Contract contract)
     {
         await ContractsRepository.RemoveContractAsync(contract);
-        
+
         await _contractsGrid.Reload();
     }
 
@@ -122,21 +123,21 @@
 
     private async Task OpenLessee(Lessee lessee)
     {
-        await DialogService.OpenAsync<LesseeCardPage>(lessee.Name, 
+        await DialogService.OpenAsync<LesseeCardPage>(lessee.Name,
             new Dictionary<string, object> { { "Lessee", lessee } },
             new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
     }
-    
+
     private async Task OpenPartner(Partner partner)
     {
-        await DialogService.OpenAsync<PartnerCardPage>(partner.Name, 
+        await DialogService.OpenAsync<PartnerCardPage>(partner.Name,
             new Dictionary<string, object> { { "Partner", partner } },
             new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
     }
-    
+
     private async Task OpenMailContract(MailContract mailContract)
     {
-        await DialogService.OpenAsync<MailContractCardPage>(mailContract.MailContractNumber, 
+        await DialogService.OpenAsync<MailContractCardPage>(mailContract.MailContractNumber,
             new Dictionary<string, object> { { "MailContract", mailContract } },
             new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
     }
