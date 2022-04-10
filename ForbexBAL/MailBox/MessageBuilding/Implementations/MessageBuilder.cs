@@ -14,27 +14,29 @@ public class MessageBuilder : IMessageBuilder
         TemplatesRepository = templatesRepository;
     }
     
+    private static object GetPropertyValue(object obj, string propertyName)
+    {
+        foreach (var t in propertyName.Split('.'))
+        {
+            var propertyInfo = obj.GetType().GetProperty(t); ;
+            
+            obj = propertyInfo?.GetValue(obj) ?? 
+                  throw new ArgumentException("Argument with such name does not exist");
+        }
+
+        return obj;
+    }
+
     public async Task<string> BuildMessage(string messageTemplateName, object messageData)
     {
-        var filepath = @"C:\Users\Артона\Downloads\Шаблоны\Детализация адреса.txt";
-        //var builder = new StringBuilder(await TemplatesRepository.GetTemplateByName(messageTemplateName));
+        var template = await TemplatesRepository.GetTemplateByName(messageTemplateName);
         
-        string template;
-        using (var sr = new StreamReader(filepath)) template = await sr.ReadToEndAsync();
-        
-        var builder = new StringBuilder(template);
         var regex = new Regex(@"(?<=\[).+?(?=\])");
-        var fields = regex.Matches(template);
-        var messageDataType = messageData.GetType();
+        var fields = regex.Matches(template.Body); //TODO: добавить в конфиг
 
+        var builder = new StringBuilder(template.Body);
         foreach (Match field in fields)
-        {
-            if (messageDataType.GetProperty(field.Value.Split('.')[1]) != null)
-            { 
-                builder.Replace($"[{field.Value}]", messageDataType.GetProperty(field.Value.Split('.')[1]).GetValue(messageData).ToString());
-            }
-        }
-        //Здесь нужно написать алгоритм приведения шаблона к письму
+            builder.Replace($"[{field.Value}]", GetPropertyValue(messageData, field.Value).ToString());
         
         return builder.ToString();
     }
