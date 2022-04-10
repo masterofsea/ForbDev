@@ -23,13 +23,16 @@ public class MessageBuilder : IMessageBuilder
         using (var sr = new StreamReader(filepath)) template = await sr.ReadToEndAsync();
         
         var builder = new StringBuilder(template);
-        var regex = new Regex(@"\[[A-Za-z]+.[A-Za-z]+\]");
-        
+        var regex = new Regex(@"(?<=\[).+?(?=\])");
         var fields = regex.Matches(template);
+        var messageDataType = messageData.GetType();
 
         foreach (Match field in fields)
         {
-            Console.WriteLine(field.Value);
+            if (messageDataType.GetProperty(field.Value.Split('.')[1]) != null)
+            { 
+                builder.Replace($"[{field.Value}]", messageDataType.GetProperty(field.Value.Split('.')[1]).GetValue(messageData).ToString());
+            }
         }
         //Здесь нужно написать алгоритм приведения шаблона к письму
         
