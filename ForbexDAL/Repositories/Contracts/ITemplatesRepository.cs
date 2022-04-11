@@ -12,4 +12,6 @@ public interface ITemplatesRepository
     /// <param name="templateName">Имя шаблона</param>
     /// <returns>Шаблон письма</returns>
     Task<Template> GetTemplateByName(string templateName);
+
+    Task<IEnumerable<string>> GetAllTemplateNames();
 }
