@@ -26,4 +26,18 @@ public class TemplatesRepository : ITemplatesRepository
     {
         return await Context.Templates.Select(i => i.Name).ToListAsync();
     }
+
+    public async Task AddTemplate(Template template)
+    {
+        Context.Templates.Add(template);
+
+        await Context.SaveChangesAsync();
+    }
+
+    public async Task UpdateTemplate(Template template)
+    {
+        Context.Templates.Update(template);
+
+        await Context.SaveChangesAsync();
+    }
 }
