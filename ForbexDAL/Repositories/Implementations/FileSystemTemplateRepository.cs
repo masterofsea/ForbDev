@@ -11,4 +11,19 @@ public class FileSystemTemplateRepository : ITemplatesRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<IEnumerable<string>> GetAllTemplateNames()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task AddTemplate(Template template)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateTemplate(Template template)
+    {
+        throw new NotImplementedException();
+    }
 }

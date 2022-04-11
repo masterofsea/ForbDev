@@ -21,4 +21,23 @@ public class TemplatesRepository : ITemplatesRepository
         //TODO правильное сравнение строк организовать
         return await Context.Templates.FirstAsync(i => i.Name == templateName);
     }
+
+    public async Task<IEnumerable<string>> GetAllTemplateNames()
+    {
+        return await Context.Templates.Select(i => i.Name).ToListAsync();
+    }
+
+    public async Task AddTemplate(Template template)
+    {
+        Context.Templates.Add(template);
+
+        await Context.SaveChangesAsync();
+    }
+
+    public async Task UpdateTemplate(Template template)
+    {
+        Context.Templates.Update(template);
+
+        await Context.SaveChangesAsync();
+    }
 }
