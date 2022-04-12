@@ -18,6 +18,7 @@
       text-align: center;
     }
 </style>
+
 <RadzenDataGrid @ref="_contractsGrid" Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="20"
                 AllowSorting="true" AllowMultiColumnSorting="true"
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
@@ -125,20 +126,20 @@
     {
         await DialogService.OpenAsync<LesseeCardPage>(lessee.Name,
             new Dictionary<string, object> { { "Lessee", lessee } },
-            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
     private async Task OpenPartner(Partner partner)
     {
         await DialogService.OpenAsync<PartnerCardPage>(partner.Name,
             new Dictionary<string, object> { { "Partner", partner } },
-            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
     private async Task OpenMailContract(MailContract mailContract)
     {
         await DialogService.OpenAsync<MailContractCardPage>(mailContract.MailContractNumber,
             new Dictionary<string, object> { { "MailContract", mailContract } },
-            new DialogOptions { Width = "700px", Height = "570px", Resizable = true, Draggable = false });
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }
 }

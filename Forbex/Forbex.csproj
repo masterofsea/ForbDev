@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ForbexBAL\ForbexBAL.csproj" />
       <ProjectReference Include="..\ForbexDAL\ForbexDAL.csproj" />
     </ItemGroup>
 </Project>

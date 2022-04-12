@@ -1,3 +1,5 @@
+using ForbexBAL.MailBox.MessageBuilding.Contracts;
+using ForbexBAL.MailBox.MessageBuilding.Implementations;
 using ForbexDAL.DbContexts;
 using ForbexDAL.Repositories.Contracts;
 using ForbexDAL.Repositories.Implementations;
@@ -15,6 +17,8 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ForbexDbContext>(opt =>
         assembly => assembly.MigrationsAssembly(typeof(ForbexDbContext).Assembly.FullName)));
 
 builder.Services.AddSingleton<IContractsRepository, MockContractsRepository>();
+builder.Services.AddTransient<ITemplatesRepository, TemplatesRepository>();
+builder.Services.AddTransient<IMessageBuilder, MessageBuilder>();
 
 
 builder.Services.AddScoped<NotificationService>();
