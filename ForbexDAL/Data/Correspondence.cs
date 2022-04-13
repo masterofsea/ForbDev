@@ -12,26 +12,50 @@ public class Correspondence
     /// Уникальный идентификатор корреспонденции
     /// </summary>
     public int Id { get; set; }
-    
+
     /// <summary>
     /// Имя отправителя
     /// </summary>
-    public string? SenderName { get; set; }
-    
+    public string SenderName { get; set; } = null!;
+
     /// <summary>
     /// Имя получателя
     /// </summary>
-    public string? ReceiverName { get; set; }
-    
+    private Lessee? _receiver;
+    public Lessee Receiver
+    {
+        get => _receiver ?? new Lessee();
+        set => _receiver = value;
+    }
+
+
     /// <summary>
     /// Статут корреспонденции
     /// </summary>
     public LetterStatus Status { get; set; }
-    
+
     /// <summary>
     /// Адрес получения
     /// </summary>
-    public string? ReceivingAddress { get; set; }
+    public int AddressId { get; set; }
+    
+    private Address? _address;
+    public Address ReceivingAddress
+    {
+        get => _address ?? new Address();
+        
+        set => _address = value;
+    }
+    
+    /// <summary>
+    /// Дата получения
+    /// </summary>
+    public DateTime ReceivingDate { get; set; }
+    
+    /// <summary>
+    /// Платное письмо
+    /// </summary>
+    public bool IsPaid { get; set; }
 }
 
 /// <summary>
@@ -40,6 +64,7 @@ public class Correspondence
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public enum LetterStatus
 {
-    Sent,
-    Received
+    SentToReceiver,
+    SentToArchive,
+    WaitingForReceiver
 }

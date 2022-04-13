@@ -1,5 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace ForbexDAL.Data;
 
@@ -18,7 +17,14 @@ public class Contract
     /// <summary>
     /// Адрес арендуемого помещения
     /// </summary>
-    public string? Address { get; set; }
+    public int AddressId { get; set; }
+
+    private Address? _address;
+    public Address Address
+    {
+        get => _address ?? new Address();
+        set => _address = value;
+    }
         
     public ContractState ContractState { get; set; }
         
@@ -45,7 +51,13 @@ public class Contract
     /// <summary>
     /// Дата завершения договора
     /// </summary>
-    public DateTime? LeaseEndDate { get; set; }
+    private DateTime? _leaseEndDate;
+    public DateTime? LeaseEndDate
+    {
+        get => LeaseTerm is null? null : LeaseStartDate.Value.AddMonths(LeaseTerm.Value);
+
+        set => _leaseEndDate = value;
+    }
 
     /// <summary>
     /// Срок договора  в целом числе месяцев
@@ -90,7 +102,7 @@ public class Contract
     /// <summary>
     /// Форма оплаты
     /// </summary>
-    public PaymentForm PaymentForm { get; set; }
+    public PaymentMethod PaymentMethod { get; set; }
     
     /// <summary>
     /// Флаг оплаты
@@ -122,7 +134,15 @@ public class Contract
     /// </summary>
     public int? MailContractId { get; set; }
 
+    /// <summary>
+    /// Задача по договору
+    /// </summary>
+    public string? Task { get; set; }
     
+    /// <summary>
+    /// Дополнительная информация
+    /// </summary>
+    public string? AdditionalInfo { get; set; }
     
     /// <summary>
     /// Почтовый договор
@@ -148,7 +168,9 @@ public enum RegistrationType
 {
     New,
     Change,
-    Prolongation
+    Prolongation,
+    Specification,
+    SpecificationWithPayment
 }
 
 /// <summary>
@@ -165,7 +187,7 @@ public enum ContractState
 /// Перечисление форм оплаты
 /// </summary>
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-public enum PaymentForm 
+public enum PaymentMethod 
 {
     Mixed,
     NonCash,

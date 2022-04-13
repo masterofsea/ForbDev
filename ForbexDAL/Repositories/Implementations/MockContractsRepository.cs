@@ -14,7 +14,11 @@ public class MockContractsRepository : IContractsRepository
         {
             Contracts.Add(new Contract
             {
-                Address = rnd.Next().ToString(),
+                Address = new Address()
+                {
+                    FullAddress = rnd.Next().ToString(),
+                    Ifts = rnd.Next().ToString()
+                },
                 Id = i,
                 Ifts = rnd.Next().ToString(),
                 ConclusionDate = DateTime.Now - TimeSpan.FromDays(i),
@@ -25,12 +29,17 @@ public class MockContractsRepository : IContractsRepository
                 Paid = i % 3 != 0,
                 Lessee = new Lessee
                 {
-                    Name = $"{rnd.Next()} ИМЯ"
+                    Name = $"Карачаево-Черкесский метлазовад{rnd.Next()}",
+                    Email = $"{rnd.Next().ToString()}.gmail.com"
                 },
                 MailContract = i % 5 == 0 ? new MailContract
                 {
                     MailContractNumber = rnd.Next().ToString()
-                } : new MailContract()
+                } : new MailContract(),
+                Partner = new Partner()
+                {
+                    Name = $"Матрикс{rnd.Next()}"
+                }
             });
         }
     }
@@ -40,10 +49,10 @@ public class MockContractsRepository : IContractsRepository
         return Contracts;
     }
 
-    public Task<Contract?> GetContractById(int id)
+    public Task<Contract> GetContractById(int id)
     {
         var tcs = new TaskCompletionSource<Contract?>();
-        var result = Contracts.FirstOrDefault(i => i.Id == id);
+        var result = Contracts.First(i => i.Id == id);
         tcs.SetResult(result);
         return tcs.Task;
     }

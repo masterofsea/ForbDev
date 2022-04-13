@@ -21,9 +21,9 @@ public class EfContractsRepository : IContractsRepository
         return Context.Contracts;
     }
 
-    public async Task<Contract?> GetContractById(int id)
+    public async Task<Contract> GetContractById(int id)
     {
-        return await Context.Contracts.FirstOrDefaultAsync(i => i.Id == id);
+        return await Context.Contracts.FirstAsync(i => i.Id == id);
     }
 
     public async Task RemoveContractAsync(Contract contract)

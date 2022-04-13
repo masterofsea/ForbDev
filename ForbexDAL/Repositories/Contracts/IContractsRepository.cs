@@ -18,7 +18,7 @@ public interface IContractsRepository
     /// </summary>
     /// <param name="id">Id договора аренды</param>
     /// <returns>договор аренды</returns>
-    Task<Contract?> GetContractById(int id);
+    Task<Contract> GetContractById(int id);
 
     /// <summary>
     /// Удаление договора аренды по Id
