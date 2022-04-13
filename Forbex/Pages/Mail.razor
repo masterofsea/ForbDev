@@ -18,9 +18,12 @@
             <div class="col-md-10">
                 <RadzenTextBox Style="width: 100%" Name="Receiver" @bind-Value="@Msg.Receiver"/>
             </div>
-            <div class="col-md-1">
-                <RadzenRequiredValidator Component="Receiver" Text="Enter email" />
-                <RadzenEmailValidator Component="Receiver" Text="Enter email" Style="position:absolute" Popup="true"/>
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <RadzenRequiredValidator Style="font-size: small" Component="Receiver" Text="Необходимо ввести почтовый адрес отправителя"/>
+                <RadzenEmailValidator Style="font-size: small" Component="Receiver" Text="Неверный формат Email"/>
             </div>
         </div>
         <div class="row">
@@ -40,6 +43,12 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-4">
+                <RadzenRequiredValidator Style="font-size: small" Component="Theme" Text="Необходимо задать тему письма"/>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-1">
                 <RadzenLabel Text="Шаблон:"/>
             </div>
@@ -51,6 +60,12 @@
         <div class="row align-content-center">
             <div class="col-md-12">
                 <RadzenTextArea Placeholder="Текст письма" Style="min-height: 250px; width: 100%" Name="MailBody" @bind-Value="@Msg.MessageBody"/>
+            </div>
+        </div>
+        @*TODO реализовать стилизацию по примеру*@
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenRequiredValidator Style="font-size: small" Component="MailBody" Text="Письмо ничего не содержит"/>
             </div>
         </div>
         <div class="row">

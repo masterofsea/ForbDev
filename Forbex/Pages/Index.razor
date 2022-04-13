@@ -4,8 +4,6 @@
 @using ForbexDAL.Repositories.Contracts
 
 
-<PageTitle>Договоры Forbex</PageTitle>
-
 @* @if (SelectedContracts?.Any() == true) *@
 @* { *@
 @*     <NavLink class="btn btn-sm btn-info" href="@GetMailUri(SelectedContracts.First().Id)"> *@
@@ -23,7 +21,11 @@
                 AllowSorting="true" AllowMultiColumnSorting="true"
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
                 SelectionMode="DataGridSelectionMode.Single" @bind-Value="@SelectedContracts"
-                AllowColumnResize="false">
+                AllowColumnResize="false" ColumnWidth="300px" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single">
+                
+    <Template Context="contract">
+        TYPE HERE CONTENT OF EXPANDED ROW(CHECK E.G. RIGHT HERE - https://blazor.radzen.com/master-detail-hierarchy. IT WILL HELP YOU UNDERSTAND WHAT SHOULD YOU  DO)
+    </Template>
     <Columns>
         <FooterTemplate>
             Displayed orders: <b>@_contractsGrid.View.Count().ToString()</b> of <b>@Contracts?.Count().ToString()</b>
@@ -38,24 +40,26 @@
             <Template Context="data">
                 @if (data.Paid)
                 {
-                    <RadzenBadge Style="width: 80%; height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО"/>
+                    <RadzenBadge Style="height: 100%" BadgeStyle="BadgeStyle.Success" Text="ОПЛАЧЕНО"/>
                 }
                 else
                 {
-                    <RadzenBadge Style="width: 80%; height: 100%" IsPill="true" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО"/>
+                    <RadzenBadge Style="height: 100%" BadgeStyle="BadgeStyle.Danger" Text="НЕ ОПЛАЧЕНО"/>
                 }
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="Lessee" Title="Арендатор">
             <Template Context="data">
-                <RadzenButton Click="@(async _ => await OpenLessee(data.Lessee))" Icon="person" Text="@data.Lessee.Name"/>
+                <RadzenButton Click="@(async _ => await OpenLessee(data.Lessee))" Icon="view_in_ar" Text="@data.Lessee.Name" 
+                              Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Style="font-size: small"/>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn Sortable="false" Filterable="false" TItem="Contract" Property="Partner" Title="Партнер">
             <Template Context="data">
                 @if (!string.IsNullOrEmpty(data.Partner.Name))
                 {
-                    <RadzenButton Click="@(async _ => await OpenPartner(data.Partner))" Icon="person" Text="@data.Partner.Name"/>
+                    <RadzenButton Click="@(async _ => await OpenPartner(data.Partner))" Icon="public" Text="@data.Partner.Name" 
+                                  Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Style="font-size: small"/>
                 }
                 else
                 {
@@ -67,7 +71,8 @@
             <Template Context="data">
                 @if (!string.IsNullOrEmpty(data.MailContract.MailContractNumber))
                 {
-                    <RadzenButton Click="@(async _ => await OpenMailContract(data.MailContract))" Icon="person" Text="@data.MailContract.MailContractNumber"/>
+                    <RadzenButton Click="@(async _ => await OpenMailContract(data.MailContract))" Icon="mail" Text="@data.MailContract.MailContractNumber" 
+                                  Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Style="font-size: small"/>
                 }
                 else
                 {
@@ -75,13 +80,13 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
-            <Template Context="contract">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(_ => DeleteRow(contract))"
-                              @onclick:stopPropagation="true">
-                </RadzenButton>
-            </Template>
-        </RadzenDataGridColumn>
+        @* <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px"> *@
+        @*     <Template Context="contract"> *@
+        @*         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(_ => DeleteRow(contract))" *@
+        @*                       @onclick:stopPropagation="true"> *@
+        @*         </RadzenButton> *@
+        @*     </Template> *@
+        @* </RadzenDataGridColumn> *@
         <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="60px">
             <Template Context="contract">
                 <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" Click="@(_ => GoToLetterCreation(contract.Id))"
@@ -141,5 +146,10 @@
         await DialogService.OpenAsync<MailContractCardPage>(mailContract.MailContractNumber,
             new Dictionary<string, object> { { "MailContract", mailContract } },
             new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
+    }
+    
+    void RowRender(RowRenderEventArgs<Contract> args)
+    {
+        args.Expandable = true;
     }
 }

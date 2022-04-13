@@ -5,14 +5,19 @@
 
 @layout MainLayout
 
-
-<RadzenTemplateForm Data="Contract" Submit="@((Contract args) => { Submit(args); })">
+@* <HeaderTemplate> *@
+@*     <h4 class="m-0 d-flex align-items-center"> *@
+@*        <b>Договор аренды</b> *@
+@*     </h4> *@
+@* </HeaderTemplate> *@
+<h2> <RadzenIcon Icon="account_box" Class="mr-1" /> Карточка добавления договора</h2>
+<RadzenTemplateForm Data="Contract" Submit="@(async (Contract args) => { await OnBusyClick(args); })">
 <div class="row">
 <div class="col-md-6">
     <RadzenFieldset Text="Договор аренды">
         <div class="row">
             <div class="col-md-10">
-                <RadzenTextBox Placeholder="Адрес" style="width: 100%;" Name="Address" @bind-value="@Contract.Address"/>
+                <RadzenDropDown Placeholder="Адрес" style="width: 100%;" Name="Address" TValue="string" @bind-value="@Contract.Address.FullAddress" Data="@AddressNames" Change="@OnAddressChange"/>
                 <RadzenRequiredValidator Component="Address" Text="Address is required"/>
             </div>
             <div class="col-md-2">
@@ -24,7 +29,7 @@
                 <RadzenLabel Component="ConclusionDate" Text="Дата заключения"/>
             </div>
             <div class="col-md-8 align-items-left">
-                <RadzenDatePicker style="width: 100%;" Name="ConclusionDate" TValue="DateTime?" @bind-value="@Contract.ConclusionDate"/>
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="ConclusionDate" TValue="DateTime?" @bind-value="@Contract.ConclusionDate"/>
             </div>
         </div>
         <div class="row">
@@ -32,7 +37,7 @@
                 <RadzenLabel Component="LeaseStartDate" Text="Дата начала аренды"/>
             </div>
             <div class="col-md-8">
-                <RadzenDatePicker style="width: 100%;" Name="LeaseStartDate" TValue="DateTime?" @bind-value="@Contract.LeaseStartDate"/>
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="LeaseStartDate" TValue="DateTime?" @bind-value="@Contract.LeaseStartDate"/>
             </div>
         </div>
         <div class="row">
@@ -40,7 +45,7 @@
                 <RadzenLabel Component="LeaseEndDate" Text="Дата окончания аренды"/>
             </div>
             <div class="col-md-8">
-                <RadzenDatePicker style="width: 100%;" Name="LeaseEndDate" TValue="DateTime?" @bind-value="@Contract.LeaseEndDate"/>
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="LeaseEndDate" TValue="DateTime?" @bind-value="@Contract.LeaseEndDate" ReadOnly="true"/>
             </div>
         </div>
         <div class="row">
@@ -61,18 +66,32 @@
             </div>
         </div>
 
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-3">
+                <RadzenLabel Text="Срок действия(мес.)" style="width: 100%;" ShowUpDown="false" Component="LeaseTerm" TValue="int?" @bind-value="@Contract.LeaseTerm"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="Цена 1" ShowUpDown="false" style="width: 100%" TValue="decimal?" Component="Price1" @bind-value="@Contract.Price1"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="Цена 2" ShowUpDown="false" style="width: 100%" TValue="decimal?" Component="Price2" @bind-value="@Contract.Price2"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="Штраф" ShowUpDown="false" style="width: 100%" TValue="decimal?" Component="Penalty" @bind-value="@Contract.Penalty"/>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-3">
                 <RadzenNumeric Placeholder="Срок действия договора(мес.)" style="width: 100%;" ShowUpDown="false" Min="1" Name="LeaseTerm" TValue="int?" @bind-value="@Contract.LeaseTerm"/>
             </div>
             <div class="col-md-3">
-                <RadzenNumeric Placeholder="Цена 1" ShowUpDown="false" style="width: 100%" TValue="decimal?" Name="Price1" @bind-value="@Contract.Price1"/>
+                <RadzenNumeric Placeholder="Цена 1" ShowUpDown="false" style="width: 100%" TValue="decimal?" Min="1" Name="Price1" @bind-value="@Contract.Price1"/>
             </div>
             <div class="col-md-3">
-                <RadzenNumeric Placeholder="Цена 2" ShowUpDown="false" style="width: 100%" TValue="decimal?" Name="Price2" @bind-value="@Contract.Price2"/>
+                <RadzenNumeric Placeholder="Цена 2" ShowUpDown="false" style="width: 100%" TValue="decimal?" Min="1" Name="Price2" @bind-value="@Contract.Price2"/>
             </div>
             <div class="col-md-3">
-                <RadzenNumeric Placeholder="Штраф" ShowUpDown="false" style="width: 100%" TValue="decimal?" Name="Penalty" @bind-value="@Contract.Penalty"/>
+                <RadzenNumeric Placeholder="Штраф" ShowUpDown="false" style="width: 100%" TValue="decimal?" Min="1" Name="Penalty" @bind-value="@Contract.Penalty"/>
             </div>
         </div>
         <div class="row">
@@ -278,15 +297,15 @@
             <RadzenLabel Text="E-mail" Component="PartnerEmail"/>
         </div>
         <div class="col-md-8">
-                    <RadzenTextBox style="width: 100%" Name="PartnerEmail" @bind-Value="@Contract.Partner.Email" Disabled="@(SelectedPartner == null)"/>
-                </div>
+            <RadzenTextBox style="width: 100%" Name="PartnerEmail" @bind-Value="@Contract.Partner.Email" Disabled="@(SelectedPartner == null)"/>
         </div>
+    </div>
         <div class="row">
             <div class="col-md-4">
                 <RadzenLabel Text="Дополнительные контакты"/>
             </div>
             <div class="col-md-8">
-                <RadzenTextBox style="width: 100%" Name="Textbox9" Disabled="@hasPartner"/>
+                <RadzenTextBox style="width: 100%" Name="Textbox9" Disabled="@(SelectedPartner == null)"/>
             </div>
         </div>
         <div class="row">
@@ -294,7 +313,7 @@
                 <RadzenLabel Text="Контактное лицо"/>
             </div>
             <div class="col-md-8">
-                <RadzenTextBox style="width: 100%" Name="PartnerContactName" @bind-Value="@Contract.Partner.ContactName" Disabled="@hasPartner"/>
+                <RadzenTextBox style="width: 100%" Name="PartnerContactName" @bind-Value="@Contract.Partner.ContactName" Disabled="@(SelectedPartner == null)"/>
             </div>
         </div>
         <div class="row">
@@ -302,7 +321,7 @@
                 <RadzenLabel Text="Тип должности"/>
             </div>
             <div class="col-md-8">
-                <RadzenTextBox style="width: 100%" Name="Textbox11" Disabled="@hasPartner"/>
+                <RadzenTextBox style="width: 100%" Name="Textbox11" Disabled="@(SelectedPartner == null)"/>
             </div>
         </div>
     </RadzenFieldset>
@@ -310,25 +329,22 @@
 </div>
 <div class="row justify-content-center">
     <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-        <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save"/>
+        <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Сохранить" BusyText="Сохранение ..." IsBusy="@busy"/>
     </div>
 </div>
 </RadzenTemplateForm>
 
 @code {
-
-    void Submit(Contract contract)
-    {
-        Console.WriteLine($"Производим сохранение договора аренды с данной {contract.Address}");
-    }
-
     [Inject]
     IContractsRepository ContractsRepository { get; set; } = null!;
 
-    Contract Contract { get; } = new();
+    Contract Contract { get; } = new()
+    {
+        Address = new ForbexDAL.Data.Address()
+    };
 
     bool hasPartner;
-    IEnumerable<string> PaymentMethods { get; } = Enum.GetNames<PaymentForm>();
+    IEnumerable<string> PaymentMethods { get; } = Enum.GetNames<PaymentMethod>();
 
     IEnumerable<string> MailContractNums { get; } = new List<string>
     {
@@ -352,6 +368,15 @@
         "Шестерочка"
     };
 
+    IEnumerable<Address> Addresses { get; set; } = new List<Address>
+    {
+        new(){FullAddress ="город Москва, город Зеленоград корпус 521 квартира 96", Ifts = "11"},
+        new(){FullAddress ="Москва улица Туристская дом 16 корпус 4 квартира 132", Ifts = "17"},
+        new(){FullAddress ="Айрофонорг, метро, между Штормградом, у гнома на голове", Ifts = "147"}
+    };
+
+    IEnumerable<string> AddressNames => Addresses.Select(a => a.FullAddress);
+
     IEnumerable<string> Partners { get; } = new List<string>
     {
         "Smartavia",
@@ -362,4 +387,25 @@
     IEnumerable<string> RegistrationTypes { get; } = Enum.GetNames<RegistrationType>();
 
     string? SelectedPartner { get; set; }
+
+    void OnAddressChange()
+    {
+        var address = Addresses.First(i => i.FullAddress == Contract.Address?.FullAddress);
+        Contract.Ifts = address.Ifts;
+    }
+    class Address
+    {
+        public string FullAddress { get; init; }
+        
+        public string Ifts { get; init; }
+    }
+
+    bool busy;
+    async Task OnBusyClick(Contract contract)
+    {
+        busy = true;
+        await Task.Delay(2000);
+        busy = false;
+        Console.WriteLine($"Производим сохранение договора аренды с данной {contract.Address}");
+    }
 }

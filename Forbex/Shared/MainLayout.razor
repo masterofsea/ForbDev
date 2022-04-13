@@ -8,9 +8,7 @@
 <RadzenContextMenu />
 
 <RadzenLayout>
-  <ChildContent>
     <RadzenHeader>
-      <ChildContent>
         <div class="row justify-content-start align-items-center">
           <div class="col-2 d-flex align-items-center">
             <RadzenSidebarToggle Click="@Collapse"></RadzenSidebarToggle>
@@ -18,45 +16,34 @@
           </div>
           <div class="col-6">
             <RadzenMenu>
-              <RadzenMenuItem Text="General" Icon="home">
-                <RadzenMenuItem Text="Buttons" Path="buttons" Icon="account_circle"></RadzenMenuItem>
-                <RadzenMenuItem Text="Menu" Path="menu" Icon="line_weight"></RadzenMenuItem>
-                <RadzenMenuItem Text="ChildClick" Icon="attach_file"></RadzenMenuItem>
-                <RadzenMenuItem Text="Dialog" Path="dialog" Icon="perm_media"></RadzenMenuItem>
-                <RadzenMenuItem Text="Notification" Path="notification" Icon="announcement"></RadzenMenuItem>
-              </RadzenMenuItem>
+              <RadzenMenuItem Path="/" Text="General" Icon="article"/>
+              
+              <RadzenMenuItem Path="сontractAdd" Text="Почта" Icon="mail"/>
+              
+              <RadzenMenuItem Text="General" Icon="home"/>
             </RadzenMenu>
           </div>
         </div>
-      </ChildContent>
     </RadzenHeader>
     <RadzenBody>
-      <ChildContent>
-        <h1>DataGrid <strong>Custom Virtualization</strong></h1>
-        
-        <p>
-            RadzenDataGrid supports virtualization with custom data-binding scenarios. Handle the <code>LoadData</code> event as usual.
-        </p>
         <RadzenPanel Style="width: 90%; margin: 40px auto">
           @Body
         </RadzenPanel>
-      </ChildContent>
     </RadzenBody>
-    <RadzenSidebar Visible="@_hidden"> 
-      <ChildContent>
+    <RadzenSidebar Visible="@_hidden">
         <RadzenPanelMenu style="height: 100%">
           <ChildContent>
             <RadzenPanelMenuItem Text="Договоры" Path="contracts" Icon="book"/>
             <RadzenPanelMenuItem Text="Добавление договора" Path="сontractAdd" Icon="add_circle"/>
           </ChildContent>
         </RadzenPanelMenu>
-      </ChildContent>
     </RadzenSidebar>
-  </ChildContent>
 </RadzenLayout>
 
 @code
 {
+  [Parameter]
+  public RenderFragment Header { get; set; }
   bool _hidden;
   void Collapse()
   {
