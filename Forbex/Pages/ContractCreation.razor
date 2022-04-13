@@ -1,4 +1,4 @@
-﻿@page "/сontractAdd"
+﻿@page "/contractAdd/{ContractId:int?}"
 
 @using ForbexDAL.Data
 @using ForbexDAL.Repositories.Contracts
@@ -132,6 +132,32 @@
             </div>
             <div class="col-md-6">
                 <RadzenCheckBox Name="Receipt" TriState="false" TValue="bool" @bind-value="@Contract.Receipt"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Style="text-align: right" Text="Наличие чека" Component="Receipt"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenCheckBox Name="Receipt" TriState="false" TValue="bool" @bind-value="@Contract.Receipt"/>
+            </div>
+        </div>
+        <h5>Дополнительно</h5>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Задача" Component="Task"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox Style="width: 100%" Name="Task" TValue="bool" @bind-value="@Contract.Task"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дополнительная информация" Component="AdditionalInfo"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox Style="width: 100%" Name="AdditionalInfo" @bind-value="@Contract.AdditionalInfo"/>
             </div>
         </div>
     </RadzenFieldset>
@@ -329,7 +355,7 @@
 </div>
 <div class="row justify-content-center">
     <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-        <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Сохранить" BusyText="Сохранение ..." IsBusy="@busy"/>
+        <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Сохранить" BusyText="Сохранение ..." IsBusy="@_busy"/>
     </div>
 </div>
 </RadzenTemplateForm>
@@ -338,7 +364,13 @@
     [Inject]
     IContractsRepository ContractsRepository { get; set; } = null!;
 
-    Contract Contract { get; } = new()
+    protected override async Task OnInitializedAsync()
+    {
+        if (ContractId == null) return;
+        Contract = await ContractsRepository.GetContractById(ContractId.Value);
+    }
+
+    Contract Contract { get; set; } = new()
     {
         Address = new ForbexDAL.Data.Address()
     };
@@ -384,6 +416,9 @@
         "Аэрофлот"
     };
     
+    [Parameter]
+    public int? ContractId { get; set; }
+    
     IEnumerable<string> RegistrationTypes { get; } = Enum.GetNames<RegistrationType>();
 
     string? SelectedPartner { get; set; }
@@ -400,12 +435,12 @@
         public string Ifts { get; init; }
     }
 
-    bool busy;
+    bool _busy;
     async Task OnBusyClick(Contract contract)
     {
-        busy = true;
+        _busy = true;
         await Task.Delay(2000);
-        busy = false;
+        _busy = false;
         Console.WriteLine($"Производим сохранение договора аренды с данной {contract.Address}");
     }
 }

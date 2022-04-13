@@ -3,13 +3,6 @@
 @using ForbexDAL.Data
 @using ForbexDAL.Repositories.Contracts
 
-
-@* @if (SelectedContracts?.Any() == true) *@
-@* { *@
-@*     <NavLink class="btn btn-sm btn-info" href="@GetMailUri(SelectedContracts.First().Id)"> *@
-@*         Отправить письмо *@
-@*     </NavLink> *@
-
 <style>
     table {
       table-layout: auto !important;
@@ -20,17 +13,18 @@
 <RadzenDataGrid @ref="_contractsGrid" Data="@Contracts" TItem="Contract" AllowPaging="true" PageSize="20"
                 AllowSorting="true" AllowMultiColumnSorting="true"
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
-                SelectionMode="DataGridSelectionMode.Single" @bind-Value="@SelectedContracts"
-                AllowColumnResize="false" ColumnWidth="300px" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single">
+                ColumnWidth="300px" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single" 
+                CellContextMenu="@OnCellContextMenu">
                 
     <Template Context="contract">
-        TYPE HERE CONTENT OF EXPANDED ROW(CHECK E.G. RIGHT HERE - https://blazor.radzen.com/master-detail-hierarchy. IT WILL HELP YOU UNDERSTAND WHAT SHOULD YOU  DO)
+        <ContractDetails Contract="contract"/>
     </Template>
     <Columns>
-        <FooterTemplate>
-            Displayed orders: <b>@_contractsGrid.View.Count().ToString()</b> of <b>@Contracts?.Count().ToString()</b>
-        </FooterTemplate>
-        <RadzenDataGridColumn TItem="Contract" Property="ContractNumber" Title="Номер"/>
+        <RadzenDataGridColumn TItem="Contract" Property="ContractNumber" Title="Номер">
+            <FooterTemplate>
+                <b>@_contractsGrid.View.Count().ToString()</b> записей из <b>@Contracts?.Count().ToString()</b>
+            </FooterTemplate>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Contract" Property="ConclusionDate" Title="Дата заключения" FormatString="{0:d}"/>
         <RadzenDataGridColumn TItem="Contract" Property="LeaseStartDate" Title="Дата начала" FormatString="{0:d}"/>
         <RadzenDataGridColumn TItem="Contract" Property="LeaseEndDate" Title="Дата окончания" FormatString="{0:d}"/>
@@ -80,18 +74,17 @@
                 }
             </Template>
         </RadzenDataGridColumn>
-        @* <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px"> *@
-        @*     <Template Context="contract"> *@
-        @*         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(_ => DeleteRow(contract))" *@
-        @*                       @onclick:stopPropagation="true"> *@
-        @*         </RadzenButton> *@
-        @*     </Template> *@
-        @* </RadzenDataGridColumn> *@
         <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="60px">
             <Template Context="contract">
-                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" Click="@(_ => GoToLetterCreation(contract.Id))"
-                              @onclick:stopPropagation="true">
-                </RadzenButton>
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" 
+                              Click="@(_ => GoToLetterCreation(contract.Id))" @onclick:stopPropagation="true"/>
+                @* <RadzenMenu> *@
+                @*     $1$ <RadzenMenuItem Text="General" Icon="home"> #1# *@
+                @*     $1$     <RadzenMenuItem Text="Buttons" Path="buttons" Icon="account_circle" Click="@(_ => GoToLetterCreation(contract.Id))" ></RadzenMenuItem> #1# *@
+                @*     $1$     <RadzenMenuItem Text="Menu" Path="menu" Icon="line_weight" Click="@(async _ => await DeleteRow(contract))" ></RadzenMenuItem> #1# *@
+                @*     $1$     <RadzenMenuItem Text="ChildClick" Icon="attach_file" Click="_ => GoToContractAdd(contract.Id)" ></RadzenMenuItem> #1# *@
+                @*     $1$ </RadzenMenuItem> #1# *@
+                @* </RadzenMenu> *@
             </Template>
         </RadzenDataGridColumn>
     </Columns>
@@ -101,17 +94,16 @@
 {
     [Inject]
     IContractsRepository ContractsRepository { get; set; } = null!;
-
     [Inject]
     NavigationManager NavManager { get; set; } = null!;
-
     [Inject]
     DialogService DialogService { get; set; } = null!;
+    [Inject]
+    ContextMenuService ContextMenuService { get; set; } = null!;
 
 
     RadzenDataGrid<Contract> _contractsGrid = null!;
     IEnumerable<Contract?>? Contracts { get; set; }
-    IList<Contract>? SelectedContracts { get; set; }
 
     protected override void OnInitialized()
     {
@@ -126,6 +118,7 @@
     }
 
     private void GoToLetterCreation(int contractId) => NavManager.NavigateTo($"Mail/{contractId}");
+    private void ContractProlongation(int contractId) => NavManager.NavigateTo($"contractAdd/{contractId}");
 
     private async Task OpenLessee(Lessee lessee)
     {
@@ -148,8 +141,52 @@
             new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }
     
+    private void OpenCorrespondenceAdditionForm(Contract contract)
+    {
+        DialogService.Open<CorrespondenceAdditionFormPage>("Добавление новой корреспонденции",
+            new Dictionary<string, object> { { "Correspondence", new Correspondence
+            {
+                Receiver = contract.Lessee,
+                ReceivingAddress = contract.Address,
+                SenderName = "CurrentUser"
+            } } },
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
+    }
+    
     void RowRender(RowRenderEventArgs<Contract> args)
     {
         args.Expandable = true;
+    }
+    
+    void OnCellContextMenu(DataGridCellMouseEventArgs<Contract> args)
+    {
+        ContextMenuService.Open(args,
+            new List<ContextMenuItem> {
+                new(){ Text = "🎫 Пролонгация договора", Value = ContractsContextMenuItems.Prolongation},
+                new(){ Text = "✉ Добавить корреспонденцию", Value = ContractsContextMenuItems.AddCorrespondence},
+                new(){ Text = "🗑 В корзину", Value = ContractsContextMenuItems.DeleteRow},
+            }, (e) => {
+                          switch ((ContractsContextMenuItems)e.Value)
+                          {
+                              case ContractsContextMenuItems.Prolongation:
+                                  ContractProlongation(args.Data.Id);
+                                  break;
+                              case ContractsContextMenuItems.AddCorrespondence:
+                                  OpenCorrespondenceAdditionForm(args.Data);
+                                  break;
+                              case ContractsContextMenuItems.DeleteRow:
+                                  DeleteRow(args.Data);
+                                  break;
+                              default:
+                                  throw new ArgumentOutOfRangeException();
+                          }
+            });
+    }
+
+    enum ContractsContextMenuItems
+    {
+        DeleteRow,
+        AddCorrespondence,
+        Prolongation
     }
 }

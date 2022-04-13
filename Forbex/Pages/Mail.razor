@@ -36,6 +36,15 @@
         </div>
         <div class="row">
             <div class="col-md-1">
+                <RadzenLabel Text="Шаблон:"/>
+            </div>
+            <div  class="col-md-10">
+                <RadzenDropDown Style="width: 100%" Name="TemplateSelectField" TValue="string" Data="@Templates" @bind-Value="@CurrentTemplateName" 
+                                Change="async _ => await OnTemplateChange()"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-1">
                 <RadzenLabel Text="Тема:"/>
             </div>
             <div class="col-md-10">
@@ -46,15 +55,6 @@
             <div class="col-md-1"></div>
             <div class="col-md-4">
                 <RadzenRequiredValidator Style="font-size: small" Component="Theme" Text="Необходимо задать тему письма"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1">
-                <RadzenLabel Text="Шаблон:"/>
-            </div>
-            <div  class="col-md-10">
-                <RadzenDropDown Style="width: 100%" Name="TemplateSelectField" TValue="string" Data="@Templates" @bind-Value="@CurrentTemplateName" 
-                                Change="async _ => await OnTemplateChange()"/>
             </div>
         </div>
         <div class="row align-content-center">
@@ -78,7 +78,6 @@
 
 
 @code {
-
     [Parameter]
     public int ContractId { get; set; }
 
@@ -97,6 +96,8 @@
     async Task OnTemplateChange()
     {
         Msg.MessageBody = await MessageBuilder.BuildMessage(CurrentTemplateName, Contract!);
+
+        Msg.Theme = CurrentTemplateName;
     }
     
     protected override async Task OnInitializedAsync()
@@ -104,6 +105,8 @@
         Contract = await ContractsRepository.GetContractById(ContractId);
 
         Templates = await TemplatesRepository.GetAllTemplateNames();
+
+        Msg.Receiver = Contract.Lessee.Email ?? string.Empty;
     }
     
     void OnSubmit(Message message)
