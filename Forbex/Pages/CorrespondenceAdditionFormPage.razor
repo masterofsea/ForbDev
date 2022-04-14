@@ -1,8 +1,111 @@
 @page "/CorrespondenceAdditionFormPage/{Correspondence}/"
 @using ForbexDAL.Data
-<h3>CorrespondenceAdditionFormPage</h3>
-//TODO organize form for addition of Correspondence
+
+@layout MainLayout
+<RadzenTemplateForm Data="Correspondence" Submit="@(async (Correspondence args) => { await OnBusyClick(args); })">
+    <div class="col-md-12">
+        <div class="text-align-left row" style="margin-bottom: 0">
+            <div class="col-md-4">
+                <RadzenLabel Text="ИФНС" Component="Ifts" TValue="string"/>
+            </div>
+            <div class="text-align-left col-md-8">
+                <RadzenLabel Text="Адрес" Component="Address"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenTextBox style="width: 100%" Name="Ifts" TValue="string" @bind-Value="Correspondence.ReceivingAddress.Ifts"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%" Name="Address" @bind-Value="@Correspondence.ReceivingAddress.FullAddress"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дата поступления" TValue="string"/>
+            </div>
+            <div class="text-align-left col-md-8">
+                <RadzenLabel Text="Отправитель"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-left">
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" TValue="DateTime?"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenAutoComplete Data="@senders" TextProperty="Item1" @bind-Value="Correspondence.SenderName"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-4">
+                <RadzenLabel Text="Дата" TValue="string"/>
+            </div>
+            <div class="text-align-left col-md-8">
+                <RadzenLabel Text="Состояние"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-left">
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" TValue="DateTime?"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%;" Placeholder="Состояние"/>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+            <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Сохранить" BusyText="Сохранение ..." IsBusy="@_busy"/>
+        </div>
+    </div>
+</RadzenTemplateForm>
 @code {
     [Parameter]
     public Correspondence? Correspondence { get; set; }
-}git 
+
+    List<Tuple<string>> senders;
+    protected override void OnInitialized()
+    {
+        senders = new (){
+            new Tuple<string>("ИФНС 46"),
+            new Tuple<string>("ФСС"),
+            new Tuple<string>("ПФР"),
+            new Tuple<string>("ГУ банка России"),
+            new Tuple<string>("извещение"),
+            new Tuple<string>("судебное извещение"),
+            new Tuple<string>("возвратное письмо"),
+            new Tuple<string>("уведомление"),
+            new Tuple<string>("суд"),
+            new Tuple<string>("судебный пристав"),
+            new Tuple<string>("прокуратура"),
+            new Tuple<string>("таможня"),
+            new Tuple<string>("ГИБДД"),
+            new Tuple<string>("ФСБ"),
+            new Tuple<string>("кадастровая служба"),
+            new Tuple<string>("УФАС"),
+            new Tuple<string>("телеграмма"),
+            new Tuple<string>("судебная телеграмма"),
+            new Tuple<string>("таможенная телеграмма"),
+            new Tuple<string>("ФАС"),
+            new Tuple<string>("контрагент")
+    // "ФСС", "ПФР", "ФОМС", "банк", "ГУ банка России", "извещение",
+            // "судебное извещение", "возвратное письмо", "уведомление", "суд",
+            // "судебный пристав", "прокуратура", "таможня", "ГИБДД", "ФСБ",
+            // "кадастровая служба", "УФАС", "телеграмма", "судебная телеграмма",
+            // "таможенная телеграмма", "ФАС", "контрагент"
+            };
+    }
+    bool _busy;
+    async Task OnBusyClick(Correspondence correspondence)
+    {
+        _busy = true;
+        await Task.Delay(2000);
+        _busy = false;
+        Console.WriteLine($"Производим сохранение данных о корреспонденции {Correspondence.Id}");
+    }
+    
+    void OnChange(object value, string name)
+    {
+        Console.WriteLine($"{name} value changed to {value}");
+    }
+}
