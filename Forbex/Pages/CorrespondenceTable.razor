@@ -1,28 +1,101 @@
 @page "/Correspondence"
 @using ForbexDAL.Data
 @using ForbexDAL.Repositories.Contracts
+
+<style>
+    table {
+      table-layout: auto !important;      
+    }
+</style>
+
+
 <h3>Correspondence</h3>
 
-<RadzenDataGrid Data="@Correspondences" TItem="Correspondence" AllowPaging="true" PageSize="20"
+<RadzenDataGrid @ref="@_correspondenceGrid" Data="@Correspondences" TItem="Correspondence" AllowPaging="true" PageSize="20"
                 AllowSorting="true" AllowMultiColumnSorting="true"
-                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or">
+                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" 
+                EditMode="DataGridEditMode.Single" RowUpdate="@OnUpdateRow">
     <Columns>
         <RadzenDataGridColumn TItem="Correspondence" Property="ReceivingAddress" Title="Дата поступления" FormatString="{0:d}"/>
-        <RadzenDataGridColumn TItem="Correspondence" Property="Status" Title="Статус отправки"/>
+        <RadzenDataGridColumn TItem="Correspondence" Property="Status" Title="Статус отправки">
+            <EditTemplate Context="data">
+                <RadzenDropDown @bind-Value="data.Status" Data="@letterStatuses"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Correspondence" Property="SenderName" Title="Отправитель"/>
         <RadzenDataGridColumn TItem="Correspondence" Property="ReceivingAddress" Title="Адрес"/>
-        <RadzenDataGridColumn TItem="Correspondence" Property="Receiver" Title="Получатель"/>
-        <RadzenDataGridColumn TItem="Correspondence" Property="IsPaid" Title="Платное письмо"/>
+        <RadzenDataGridColumn TextAlign="TextAlign.Center" TItem="Correspondence" Property="Receiver" Title="Получатель">
+            <Template Context="data">
+                <RadzenButton Click="@(async _ => await OpenLessee(data.Receiver))" Icon="view_in_ar" Text="@data.Receiver.Name" 
+                              Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Style="font-size: small"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TextAlign="TextAlign.Center" TItem="Correspondence" Property="IsPaid" Title="Платное письмо">
+            <Template Context="data">
+                @if (data.IsPaid)
+                {
+                    <p>Да</p>
+                }
+                else
+                {
+                    <p>Нет</p>
+                }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Correspondence" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="correspondence">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => EditRow(correspondence))" @onclick:stopPropagation="true"/>
+            </Template>
+            <EditTemplate Context="correspondence">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@(_ => SaveRow(correspondence))"/>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => CancelEdit(correspondence))"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        
     </Columns>
 </RadzenDataGrid>
+
 @code {
     IEnumerable<Correspondence>? Correspondences { get; set; }
 
     [Inject]
     ICorrespondenceRepository CorrespondenceRepository { get; set; } = null!;
+    [Inject]
+    DialogService DialogService { get; set; } = null!;
+
+    IEnumerable<LetterStatus> letterStatuses =  Enum.GetValues(typeof(LetterStatus)).Cast<LetterStatus>();
+    
+    RadzenDataGrid<Correspondence> _correspondenceGrid = null!;
     
     protected override void OnInitialized()
     {
         Correspondences = CorrespondenceRepository.GetAllCorrespondence();
+    }
+    
+    private async Task OpenLessee(Lessee lessee)
+    {
+        await DialogService.OpenAsync<LesseeCardPage>(lessee.Name,
+            new Dictionary<string, object> { { "Lessee", lessee } },
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
+    }
+    
+    void OnUpdateRow(Correspondence correspondence)
+    {
+        CorrespondenceRepository.UpdateCorrespondence(correspondence);
+    }
+    
+    void CancelEdit(Correspondence correspondence)
+    {
+        _correspondenceGrid.CancelEditRow(correspondence);
+    }
+    
+    async Task EditRow(Correspondence correspondence)
+    {
+        await _correspondenceGrid.EditRow(correspondence);
+    }
+    
+    async Task SaveRow(Correspondence correspondence)
+    {
+        await _correspondenceGrid.UpdateRow(correspondence);
     }
 }

@@ -11,12 +11,35 @@
 
 <RadzenTemplateForm Submit="@OnSubmit" TItem="Message" Data="@Msg">
     <RadzenFieldset Text="Почтовый ящик">
-        <div class="row" style="margin-bottom: 10px">
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenLabel Component="SendToLessee">
+                    <Template>
+                        Отправить арендатору: @Contract?.Lessee.Email
+                    </Template>
+                </RadzenLabel>
+            </div>
+            <div class="col-md-1">
+                <RadzenSwitch Name="SendToLessee" Disabled="string.IsNullOrEmpty(Contract?.Lessee.Email)" @bind-Value="@SendToLessee"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Component="SendToPartner">
+                    <Template>
+                        Отправить партнеру: @Contract?.Partner.Email
+                    </Template>
+                </RadzenLabel>
+            </div>
+            <div class="col-md-1">
+                <RadzenSwitch Name="SendToPartner" Disabled="string.IsNullOrEmpty(Contract?.Partner.Email)" @bind-Value="@SendToPartner"/>
+            </div>
+        </div>
+        
+        <div class="row">
             <div class="col-md-1">
                 <RadzenLabel Text="Кому:"/>
             </div>
             <div class="col-md-10">
-                <RadzenTextBox Style="width: 100%" Name="Receiver" @bind-Value="@Msg.Receiver"/>
+                <RadzenTextBox Style="width: 100%" Name="Receiver"/>
             </div>
         </div>
         <div class="row">
@@ -28,18 +51,10 @@
         </div>
         <div class="row">
             <div class="col-md-1">
-                <RadzenLabel Text="Копия:"/>
-            </div>
-            <div class="col-md-10">
-                <RadzenTextBox style="width: 100%" Name="Copy" @bind-Value="@Msg.Copy"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-1">
                 <RadzenLabel Text="Шаблон:"/>
             </div>
-            <div  class="col-md-10">
-                <RadzenDropDown Style="width: 100%" Name="TemplateSelectField" TValue="string" Data="@Templates" @bind-Value="@CurrentTemplateName" 
+            <div class="col-md-10">
+                <RadzenDropDown Style="width: 100%" Name="TemplateSelectField" TValue="string" Data="@Templates" @bind-Value="@CurrentTemplateName"
                                 Change="async _ => await OnTemplateChange()"/>
             </div>
         </div>
@@ -78,21 +93,29 @@
 
 
 @code {
+
     [Parameter]
     public int ContractId { get; set; }
 
     [Inject]
     IContractsRepository ContractsRepository { get; set; } = null!;
+
     [Inject]
     ITemplatesRepository TemplatesRepository { get; set; } = null!;
+
     [Inject]
     IMessageBuilder MessageBuilder { get; set; } = null!;
+
+    [Inject]
+    NotificationService NotificationService { get; set; } = null!;
 
     Contract? Contract { get; set; }
     IEnumerable<string> Templates { get; set; } = null!;
     string CurrentTemplateName { get; set; } = null!;
     Message Msg { get; } = new();
-    
+    bool SendToLessee { get; set; }
+    bool SendToPartner { get; set; }
+
     async Task OnTemplateChange()
     {
         Msg.MessageBody = await MessageBuilder.BuildMessage(CurrentTemplateName, Contract!);
@@ -108,21 +131,33 @@
 
         Msg.Receiver = Contract.Lessee.Email ?? string.Empty;
     }
-    
+
     void OnSubmit(Message message)
     {
-        Console.WriteLine($"Отправка письма: {message.MessageBody} этому человеку: {message.Receiver}");
+        ShowNotification(new NotificationMessage 
+        { 
+            Severity = NotificationSeverity.Success, 
+            Summary = "Отправка письма", 
+            Detail = "Письмо успешно отправлено!", 
+            Duration = 10000
+        });
     }
 
     [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     class Message
     {
         public string Receiver { get; set; } = null!;
-        
+
         public string? Copy { get; set; }
-        
+
         public string Theme { get; set; } = null!;
-        
+
         public string MessageBody { get; set; } = null!;
     }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
+
 }
