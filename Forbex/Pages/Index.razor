@@ -118,7 +118,7 @@
     }
 
     private void GoToLetterCreation(int contractId) => NavManager.NavigateTo($"Mail/{contractId}");
-    private void ContractProlongation(int contractId) => NavManager.NavigateTo($"contractAdd/{contractId}");
+    private void ContractProlongation(int contractId) => NavManager.NavigateTo($"ContractAdd/{contractId}");
 
     private async Task OpenLessee(Lessee lessee)
     {
@@ -161,25 +161,27 @@
     void OnCellContextMenu(DataGridCellMouseEventArgs<Contract> args)
     {
         ContextMenuService.Open(args,
-            new List<ContextMenuItem> {
-                new(){ Text = "🎫 Пролонгация договора", Value = ContractsContextMenuItems.Prolongation},
-                new(){ Text = "✉ Добавить корреспонденцию", Value = ContractsContextMenuItems.AddCorrespondence},
-                new(){ Text = "🗑 В корзину", Value = ContractsContextMenuItems.DeleteRow},
-            }, (e) => {
-                          switch ((ContractsContextMenuItems)e.Value)
-                          {
-                              case ContractsContextMenuItems.Prolongation:
-                                  ContractProlongation(args.Data.Id);
-                                  break;
-                              case ContractsContextMenuItems.AddCorrespondence:
-                                  OpenCorrespondenceAdditionForm(args.Data);
-                                  break;
-                              case ContractsContextMenuItems.DeleteRow:
-                                  DeleteRow(args.Data);
-                                  break;
-                              default:
-                                  throw new ArgumentOutOfRangeException();
-                          }
+            new List<ContextMenuItem>
+            {
+                new() { Text = "🎫 Пролонгация договора", Value = ContractsContextMenuItems.Prolongation },
+                new() { Text = "✉ Добавить корреспонденцию", Value = ContractsContextMenuItems.AddCorrespondence },
+                new() { Text = "🗑 В корзину", Value = ContractsContextMenuItems.DeleteRow },
+            }, (e) =>
+            {
+                switch ((ContractsContextMenuItems)e.Value)
+                {
+                    case ContractsContextMenuItems.Prolongation:
+                        ContractProlongation(args.Data.Id);
+                        break;
+                    case ContractsContextMenuItems.AddCorrespondence:
+                        OpenCorrespondenceAdditionForm(args.Data);
+                        break;
+                    case ContractsContextMenuItems.DeleteRow:
+                        DeleteRow(args.Data);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             });
     }
 

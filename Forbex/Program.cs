@@ -19,7 +19,7 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ForbexDbContext>(opt =>
 builder.Services.AddSingleton<IContractsRepository, MockContractsRepository>();
 builder.Services.AddTransient<ITemplatesRepository, TemplatesRepository>();
 builder.Services.AddTransient<IMessageBuilder, MessageBuilder>();
-
+builder.Services.AddSingleton<ICorrespondenceRepository, MockCorrespondenceRepository>();
 
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();

@@ -30,7 +30,7 @@ public class Correspondence
 
 
     /// <summary>
-    /// Статут корреспонденции
+    /// Статус корреспонденции
     /// </summary>
     public LetterStatus Status { get; set; }
 

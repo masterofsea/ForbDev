@@ -1,15 +1,10 @@
-﻿@page "/contractAdd/{ContractId:int?}"
+﻿@page "/ContractAdd/{ContractId:int?}"
 
 @using ForbexDAL.Data
 @using ForbexDAL.Repositories.Contracts
 
 @layout MainLayout
 
-@* <HeaderTemplate> *@
-@*     <h4 class="m-0 d-flex align-items-center"> *@
-@*        <b>Договор аренды</b> *@
-@*     </h4> *@
-@* </HeaderTemplate> *@
 <h2> <RadzenIcon Icon="account_box" Class="mr-1" /> Карточка добавления договора</h2>
 <RadzenTemplateForm Data="Contract" Submit="@(async (Contract args) => { await OnBusyClick(args); })">
 <div class="row">
@@ -56,7 +51,6 @@
                 <RadzenDropDown style="width: 100%" Name="RegistrationType" TValue="string" Data="@RegistrationTypes"/>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-4">
                 <RadzenLabel Text="Способ оплаты" Component="PaymentType"/>
@@ -65,7 +59,6 @@
                 <RadzenDropDown style="width: 100%" Name="RegistrationType" TValue="string" Data="@PaymentMethods"/>
             </div>
         </div>
-
         <div class="row" style="margin-bottom: 0">
             <div class="col-md-3">
                 <RadzenLabel Text="Срок действия(мес.)" style="width: 100%;" ShowUpDown="false" Component="LeaseTerm" TValue="int?" @bind-value="@Contract.LeaseTerm"/>
