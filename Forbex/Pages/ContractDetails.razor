@@ -1,8 +1,388 @@
 @using ForbexDAL.Data
-<h3>ContractDetails</h3>
-@Contract.Id.ToString()
-TYPE HERE CONTENT OF EXPANDED ROW(CHECK E.G. RIGHT HERE - https://blazor.radzen.com/master-detail-hierarchy. IT WILL HELP YOU UNDERSTAND WHAT SHOULD YOU  DO)
+
+@using ForbexDAL.Data
+@using Microsoft.EntityFrameworkCore
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="Партнёр">
+            <RadzenFieldset Text="Партнер">
+                <div class="row" style="margin-bottom: 0">
+                    <div class="col-md-4">
+                        <RadzenLabel Text="Партнёр"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <RadzenTextBox style="width: 100%" Name="Partner" TValue="string" Data="Contract.Partner" AllowClear="true" AllowFiltering="true"/>
+                    </div>
+                </div>
+                <div class="text-align-left row" style="margin-bottom: 0">
+                    <div class="col-md-3">
+                        <RadzenLabel Text="Телефон" Component="PartnerPhone"/>
+                        </div>
+                    <div class="col-md-3">
+                        <RadzenLabel Text="E-mail" Component="PartnerEmail"/>
+                        </div>
+                    <div class="col-md-6">
+                        <RadzenLabel Text="Дополнительные контакты"/>
+                        </div>
+                    </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <RadzenTextBox style="width: 100%" Name="PartnerPhone" @bind-Value="@Contract.Partner.Phone"/>
+                        </div>
+                    <div class="col-md-3">
+                        <RadzenTextBox style="width: 100%" Name="PartnerEmail" @bind-Value="@Contract.Partner.Email"/>
+                        </div>
+                    <div class="col-md-6">
+                        <RadzenTextBox style="width: 100%" Name="Textbox9"/>
+                        </div>
+                    </div>
+                        <div class="row" style="margin-bottom: 0">
+                            <div class="col-md-8">
+                                <RadzenLabel Text="Контактное лицо"/>
+                            </div>
+                            <div class="col-md-4">
+                                <RadzenLabel Text="Тип должности"/>
+                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <RadzenTextBox style="width: 100%" Name="PartnerContactName" @bind-Value="@Contract.Partner.ContactName"/>
+                                </div>
+                            <div class="col-md-4">
+                                <RadzenTextBox style="width: 100%" Name="Textbox11"/>
+                            </div>
+                        </div>
+                    </RadzenFieldset>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Арендатор">
+            <div class="col-md-12">
+                <RadzenFieldset Text="Арендатор">
+                    <div class="text-align-left row" style="margin-bottom: 0">
+                        <div class="col-md-8">
+                            <RadzenLabel Text="Полное название" Component="LesseeName" TValue="string"/>
+                        </div>
+                        <div class="text-align-left col-md-4">
+                            <RadzenLabel Text="Короткое название" Component="ShortName"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%" Name="LesseeName" TValue="string" @bind-Value="Contract.Lessee.Name"/>
+                        </div>
+                        <div class="col-md-4">
+                            <RadzenTextBox style="width: 100%" Name="ShortName" @bind-Value="@Contract.Lessee.ShortName"/>
+                        </div>
+                    </div>
+                    
+                    <!--<div class="row">
+                        <div class="col-md-4">
+                            <RadzenLabel Text="Правовая форма"/>
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%" Name="OrganizationLegalForm" TValue="string" @bind-Value="@Contract.Lessee.OrganizationLegalFormShort"/>
+                        </div>
+                    </div>-->
+                    <div class="text-align-left row" style="margin-bottom: 0">
+                        <div class="col-md-3">
+                            <RadzenLabel Text="Телефон" Component="Phone"/>
+                            </div>
+                        <div class="col-md-3">
+                            <RadzenLabel Text="E-mail" Component="Email"/>
+                        </div>
+                        <div class="col-md-6">
+                            <RadzenLabel Text="Дополнительные контакты"/>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <RadzenTextBox style="width: 100%" Name="Phone" @bind-Value="@Contract.Lessee.Phone"/>
+                        </div>
+                        <div class="col-md-3">
+                            <RadzenTextBox style="width: 100%" Name="Email" @bind-Value="@Contract.Lessee.Email"/>
+                        </div>
+                        <div class="col-md-6">
+                            <RadzenTextBox style="width: 100%" Name="AdditionalContacts" @bind-Value="@Contract.Lessee.AdditionalContacts"/>
+                        </div>
+                    </div>
+                    <div class="text-align-left row" style="margin-bottom: 0">
+                        <div class="col-md-8">
+                            <RadzenLabel Text="Контактное лицо" Component="ContactName"/>
+                        </div>
+                        <div class="col-md-4">
+                            <RadzenLabel Text="Тип должности" Component="ContactNamePosition"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%" Name="ContactName" @bind-Value="@Contract.Lessee.ContactName"/>
+                        </div>
+                        <div class="col-md-4">
+                            <RadzenTextBox style="width: 100%" Name="ContactNamePosition" @bind-Value="@Contract.Lessee.ContactNamePosition"/>
+                        </div>
+                    </div>
+                    <div class="text-align-left row" style="margin-bottom: 0">
+                        <div class="col-md-8">
+                            <RadzenLabel Text="Руководитель"/>
+                            </div>
+                        <div class="col-md-4">
+                            <RadzenLabel Text="Тип должности"/>
+                            </div>
+                        </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <RadzenTextBox Placeholder="Руководитель" style="width: 100%" Name="Textbox19"/>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenTextBox Placeholder="Тип должности" style="width: 100%" Name="Textbox20"/>
+                    </div>
+                </div>
+                <h5>Реквизиты</h5>
+                    <hr>
+                    <div class="text-align-left row" style="margin-bottom: 0">
+                        <div class="col-md-4">
+                            <RadzenLabel Text="Банк"/>
+                        </div>
+                        <div class="col-md-4">
+                            <RadzenLabel Text="ИНН"/>
+                        </div>
+                        <div class="col-md-4">
+                        <RadzenLabel Text="БИК"/>
+                        </div>
+                   </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <RadzenTextBox Placeholder="Банк" style="width: 100%" Name="Bank" @bind-Value="@Contract.Lessee.Bank"/>
+                        </div>
+                        <div class="col-md-4">
+                            <RadzenTextBox Placeholder="ИНН" style="width: 100%" Name="Inn" @bind-Value="@Contract.Lessee.Inn"/>
+                        </div>
+                        <div class="col-md-4">
+                            <RadzenTextBox Placeholder="БИК" style="width: 100%" Name="Bic" @bind-Value="@Contract.Lessee.Bic"/>
+                        </div>
+                    </div>
+                    <div class="text-align-left row" style="margin-bottom: 0">
+                        <div class="col-md-6">
+                            <RadzenLabel Text="Р/С"/>
+                            </div>
+                        <div class="col-md-6">
+                            <RadzenLabel Text="ОГРН"/>
+                            </div>
+                    </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <RadzenTextBox Placeholder="Р/С" style="width: 100%" Name="CheckingAccount" @bind-Value="@Contract.Lessee.CheckingAccount"/>
+                    </div>
+                    <div class="col-md-6">
+                        <RadzenTextBox Placeholder="ОГРН" style="width: 100%" Name="Ogrn" @bind-Value="@Contract.Lessee.Ogrn"/>
+                    </div>
+                </div>
+            </RadzenFieldset>
+            </div>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Договор аренды">
+        <RadzenFieldset Text="Договор аренды">
+            <div class="row" style="margin-bottom: 0">
+                <div class="col-md-10">
+                    <RadzenLabel Text="Адрес"/>
+                    </div>
+                <div class="col-md-2">
+                    <RadzenLabel Text="ИФНС"/>
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col-md-10">
+                    <RadzenTextBox Placeholder="Адрес" style="width: 100%;" Name="Address" TValue="string" @bind-value="@Contract.Address.FullAddress"/>
+                </div>
+                <div class="col-md-2">
+                    <RadzenTextBox style="width: 100%;" Placeholder="ИФНС" ReadOnly="true" Name="Ifts" @bind-value="@Contract.Ifts"/>
+                </div>
+            </div>
+            <div class="text-align-left row" style="margin-bottom: 0">
+                <div class="col-md-4">
+                    <RadzenLabel Component="ConclusionDate" Text="Дата заключения"/>
+                    </div>
+            <div class="col-md-4">
+                <RadzenLabel Component="LeaseStartDate" Text="Дата начала аренды"/>
+            </div>
+                <div class="col-md-4">
+                    <RadzenLabel Component="LeaseEndDate" Text="Дата окончания аренды"/>
+                </div>
+                </div>
+        <div class="row">
+            <div class="col-md-4">
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="ConclusionDate" TValue="DateTime?" @bind-value="@Contract.ConclusionDate"/>
+            </div>
+            <div class="col-md-4">
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="LeaseStartDate" TValue="DateTime?" @bind-value="@Contract.LeaseStartDate"/>
+            </div>
+            <div class="col-md-4">
+                <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="LeaseEndDate" TValue="DateTime?" @bind-value="@Contract.LeaseEndDate" ReadOnly="true"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-6">
+                <RadzenLabel Text="Тип регистрации" Component="RegistrationType"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenLabel Text="Способ оплаты" Component="PaymentType"/>
+                </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenTextBox style="width: 100%" Name="RegistrationType" TValue="string" Data="@Contract.RegistrationType"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenTextBox style="width: 100%" Name="RegistrationType" TValue="string" Data="@Contract.PaymentMethod"/>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-3">
+                <RadzenLabel Text="Срок действия(мес.)" style="width: 100%;" ShowUpDown="false" Component="LeaseTerm" TValue="int?" @bind-value="@Contract.LeaseTerm"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="Цена 1" ShowUpDown="false" style="width: 100%" TValue="decimal?" Component="Price1" @bind-value="@Contract.Price1"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="Цена 2" ShowUpDown="false" style="width: 100%" TValue="decimal?" Component="Price2" @bind-value="@Contract.Price2"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenLabel Text="Штраф" ShowUpDown="false" style="width: 100%" TValue="decimal?" Component="Penalty" @bind-value="@Contract.Penalty"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenNumeric Placeholder="Срок действия договора(мес.)" style="width: 100%;" ShowUpDown="false" Min="1" Name="LeaseTerm" TValue="int?" @bind-value="@Contract.LeaseTerm"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenNumeric Placeholder="Цена 1" ShowUpDown="false" style="width: 100%" TValue="decimal?" Min="1" Name="Price1" @bind-value="@Contract.Price1"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenNumeric Placeholder="Цена 2" ShowUpDown="false" style="width: 100%" TValue="decimal?" Min="1" Name="Price2" @bind-value="@Contract.Price2"/>
+            </div>
+            <div class="col-md-3">
+                <RadzenNumeric Placeholder="Штраф" ShowUpDown="false" style="width: 100%" TValue="decimal?" Min="1" Name="Penalty" @bind-value="@Contract.Penalty"/>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-2">
+                <RadzenLabel Style="text-align: right" Text="Ежемесячные акты" Component="MonthlyActs"/>
+            </div>
+            <div class="col-md-2">
+                <RadzenLabel Style="text-align: right" Text="Возвратный экземпляр" Component="IsReturnableCopy"/>
+                </div>
+            <div class="col-md-2">
+                <RadzenLabel Text="Оплата" Component="Paid"/>
+            </div>
+            <div class="col-md-2">
+                <RadzenLabel Text="Хранение документов" Component="DocumentsStorage"/>
+            </div>
+            <div class="col-md-2">
+                <RadzenLabel Style="text-align: right" Text="Наличие чека" Component="Receipt"/>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <RadzenCheckBox Name="MonthlyActs" TriState="false" TValue="bool" @bind-value="@Contract.MonthlyActs"/>
+                </div>
+            <div class="col-md-2">
+                <RadzenCheckBox Name="IsReturnableCopy" TriState="false" TValue="bool" @bind-value="@Contract.IsReturnableCopy"/>
+            </div>
+            <div class="col-md-2">
+                <RadzenCheckBox Name="Paid" TriState="false" TValue="bool" @bind-Value="@Contract.Paid"/>
+            </div>
+            <div class="col-md-2">
+                <RadzenCheckBox Name="DocumentsStorage" TriState="false" TValue="bool" @bind-Value="@Contract.DocumentsStorage"/>
+            </div>
+            <div class="col-md-2">
+                <RadzenCheckBox Name="Receipt" TriState="false" TValue="bool" @bind-value="@Contract.Receipt"/>
+                </div>
+        </div>
+            <h5>Дополнительно</h5>
+        <hr>
+        <div class="row" style="margin-bottom: 0">
+            <div class="col-md-6">
+                <RadzenLabel Text="Задача" Component="Task"/>
+            </div>
+            <div class="col-md-6">
+                <RadzenLabel Text="Дополнительная информация" Component="AdditionalInfo"/>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenTextBox Style="width: 100%" Name="Task" TValue="bool" @bind-value="@Contract.Task"/>
+                </div>
+            <div class="col-md-6">
+                <RadzenTextBox Style="width: 100%" Name="AdditionalInfo" @bind-value="@Contract.AdditionalInfo"/>
+            </div>
+        </div>
+    </RadzenFieldset>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Почтовый договор">
+            <div class="row">
+                <div class="col-md-8">
+                    <RadzenLabel Text="Договор ПО"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <RadzenTextBox style="width: 100%" Name="MailContractNumber" TValue="string" Data="@Contract.MailContract" AllowClear="true" AllowFiltering="true"/>
+                </div>
+            </div>
+            <div class="text-align-left row" style="margin-bottom: 0">
+                <div class="col-md-4">
+                    <RadzenLabel Component="ConclusionDate" Text="Дата заключения договора ПО"/>
+                    </div>
+                <div class="col-md-4">
+                    <RadzenLabel Component="LeaseStartDate" Text="Дата начала договора ПО"/>
+                    </div>
+                <div class="col-md-4">
+                    <RadzenLabel Component="LeaseEndDate" Text="Дата окончания договора ПО"/>
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="MailContractConclusionDate" TValue="DateTime?" @bind-value="@Contract.MailContract.ConclusionDate"/>
+                </div>
+                <div class="col-md-4">
+                    <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="MailContractLeaseBeginDate" TValue="DateTime?" @bind-Value="@Contract.MailContract.LeaseBeginDate"/>
+                </div>
+                <div class="col-md-4">
+                    <RadzenDatePicker DateFormat="d" style="width: 100%;" Name="MailContractLeaseEndDate" TValue="DateTime?" @bind-value="@Contract.MailContract.LeaseEndDate" ReadOnly="true"/>
+                </div>
+            </div>
+            <div class="text-align-left row" style="margin-bottom: 0">
+                <div class="col-md-4">
+                    <RadzenLabel Component="MailContractLeaseTerm" Text="Срок действия договора"/>
+                    </div>
+                <div class="col-md-4">
+                    <RadzenLabel Text="Цена ПО 1"/>
+                    </div>
+                <div class="col-md-4">
+                    <RadzenLabel Text="Цена ПО 2"/>
+                    </div>
+                </div>
+            <div class="row">
+                    <div class="col-md-4">
+                        <RadzenNumeric Placeholder="Срок действия договора" style="width: 100%" Min="1" ShowUpDown="false" Name="MailContractLeaseTerm" TValue="int?" @bind-Value="@Contract.MailContract.LeaseTerm"/>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenNumeric Placeholder="Цена ПО 1" ShowUpDown="false" style="width: 100%" Name="MailContractPrice1" TValue="decimal?" @bind-Value="@Contract.MailContract.Price1"/>
+                    </div>
+                    <div class="col-md-4">
+                        <RadzenNumeric Placeholder="Цена ПО 2" ShowUpDown="false" style="width: 100%" Name="MailContractPrice2" TValue="decimal?" @bind-Value="@Contract.MailContract.Price2"/>
+                    </div>
+                </div>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>
+
 @code {
+
     [Parameter]
     public Contract Contract { get; set; }
+
 }
