@@ -1,0 +1,85 @@
+@page "/Partners"
+@using ForbexDAL.Data
+@using ForbexDAL.Repositories.Contracts
+
+
+<RadzenDataGrid @ref="@_partnersGrid" Data="@Partners" TItem="Partner" AllowPaging="true" PageSize="20"
+                AllowSorting="true" AllowMultiColumnSorting="true"
+                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" 
+                EditMode="DataGridEditMode.Single" RowUpdate="@OnUpdateRow">
+    <Columns>
+        <RadzenDataGridColumn TItem="Partner" Property="Name" Title="Название">
+            <EditTemplate Context="data">
+                <RadzenTextBox @bind-Value="data.Name"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Partner" Property="Email" Title="Email">
+            <EditTemplate Context="data">
+                <RadzenTextBox @bind-Value="data.Email"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Partner" Property="Phone" Title="Телефон">
+            <EditTemplate Context="data">
+                <RadzenTextBox @bind-Value="data.Phone"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Partner" Property="AdditionalContacts" Title="Дополнительные контакты">
+            <EditTemplate Context="data">
+                <RadzenTextBox @bind-Value="data.AdditionalContacts"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Partner" Property="ContactName" Title="Контактное лицо">
+            <EditTemplate Context="data">
+                <RadzenTextBox @bind-Value="data.ContactName"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Partner" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+            <Template Context="partner">
+                <RadzenButton Size="ButtonSize.Small" Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => EditRow(partner))" @onclick:stopPropagation="true"/>
+            </Template>
+            <EditTemplate Context="partner">
+                <RadzenButton Size="ButtonSize.Small" Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@(_ => SaveRow(partner))"/>
+                <RadzenButton Size="ButtonSize.Small" Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => CancelEdit(partner))"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+
+
+
+@code {
+
+    [Inject]
+    IPartnersRepository PartnersRepository { get; set; }
+    RadzenDataGrid<Partner> _partnersGrid = null!;
+    async Task OnUpdateRow(Partner partner)
+    {
+        await PartnersRepository.UpdatePartner(partner);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Partners = await PartnersRepository.GetAllPartners();
+    }
+
+    void CancelEdit(Partner partner)
+    {
+        _partnersGrid.CancelEditRow(partner);
+    }
+    
+    async Task EditRow(Partner partner)
+    {
+        await _partnersGrid.EditRow(partner);
+    }
+    
+    async Task SaveRow(Partner partner)
+    {
+        await _partnersGrid.UpdateRow(partner);
+    }
+
+
+    IEnumerable<Partner> Partners { get; set; } = new List<Partner>();
+
+
+}

@@ -8,30 +8,31 @@
 <RadzenContextMenu />
 
 <RadzenLayout>
-    <RadzenHeader>
-        <div class="row justify-content-start align-items-center">
-          <div class="col-2 d-flex align-items-center">
-            <RadzenSidebarToggle Click="@Collapse"></RadzenSidebarToggle>
-            <RadzenLabel Text="ForbexRadzen"></RadzenLabel>
-          </div>
-          <div class="col-6">
-            <RadzenMenu>
-              <RadzenMenuItem Path="/" Text="General" Icon="article"/>
-              
-              <RadzenMenuItem Path="ContractAdd" Text="Добавить договор" Icon="mail"/>
-              
-              <RadzenMenuItem Path="Correspondence" Text="Корреспонденция" Icon="token"/>
-              
-              <RadzenMenuItem Text="Корреспонденция" Icon="home"/>
-            </RadzenMenu>
-          </div>
-        </div>
-    </RadzenHeader>
-    <RadzenBody>
-        <RadzenPanel Style="width: 90%; margin: 40px auto">
-          @Body
-        </RadzenPanel>
-    </RadzenBody>
+  <RadzenHeader>
+    <div class="row justify-content-start align-items-center">
+      <div class="col-2 d-flex align-items-center">
+        <RadzenSidebarToggle Click="@Collapse"></RadzenSidebarToggle>
+        <RadzenLabel Text="ForbexRadzen"></RadzenLabel>
+      </div>
+      <div class="col-6">
+        <RadzenMenu>
+          <RadzenMenuItem Text="Аренда" Icon="article">
+            <RadzenMenuItem Path="/" Text="Договоры" Icon="content_paste_search"/>
+            <RadzenMenuItem Path="ContractAdd" Text="Добавить договор" Icon=""/>
+          </RadzenMenuItem>
+          <RadzenMenuItem Path="Correspondence" Text="Корреспонденция" Icon="token"/>
+          <RadzenMenuItem Path="Partners" Text="Партнеры" Icon="person"/>
+          <RadzenMenuItem Path="AddressTable" Text="Адреса" Icon="domain"/>
+          <RadzenMenuItem Text="Настройки" Icon="miscellaneous_services"/>
+        </RadzenMenu>
+      </div>
+    </div>
+  </RadzenHeader>
+  <RadzenBody>
+    <RadzenPanel Style="width: 90%; margin: 40px auto">
+      @Body
+    </RadzenPanel>
+  </RadzenBody>
     <RadzenSidebar Visible="@_hidden">
         <RadzenPanelMenu style="height: 100%">
           <ChildContent>

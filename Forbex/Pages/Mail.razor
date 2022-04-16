@@ -1,4 +1,4 @@
-﻿@page "/Mail/{ContractId:int}"
+﻿@page "/Mail/{ContractId:int}/{ReceiversEnum}"
 
 @using ForbexDAL.Data
 @using ForbexDAL.Repositories.Contracts
@@ -7,39 +7,39 @@
 
 <PageTitle>Почта</PageTitle>
 
-<h1>Отправляем запиську с Id = @ContractId.ToString()</h1>
-
 <RadzenTemplateForm Submit="@OnSubmit" TItem="Message" Data="@Msg">
     <RadzenFieldset Text="Почтовый ящик">
-        <div class="row">
-            <div class="col-md-3">
-                <RadzenLabel Component="SendToLessee">
-                    <Template>
-                        Отправить арендатору: @Contract?.Lessee.Email
-                    </Template>
-                </RadzenLabel>
-            </div>
-            <div class="col-md-1">
-                <RadzenSwitch Name="SendToLessee" Disabled="string.IsNullOrEmpty(Contract?.Lessee.Email)" @bind-Value="@SendToLessee"/>
-            </div>
-            <div class="col-md-3">
-                <RadzenLabel Component="SendToPartner">
-                    <Template>
-                        Отправить партнеру: @Contract?.Partner.Email
-                    </Template>
-                </RadzenLabel>
-            </div>
-            <div class="col-md-1">
-                <RadzenSwitch Name="SendToPartner" Disabled="string.IsNullOrEmpty(Contract?.Partner.Email)" @bind-Value="@SendToPartner"/>
-            </div>
-        </div>
+        @* <div class="row"> *@
+        @*     <div class="col-md-3"> *@
+        @*         $1$ <RadzenLabel Component="SendToLessee"> #1# *@
+        @*         $1$     <Template> #1# *@
+        @*         $1$          #1# *@
+        @*         $1$     </Template> #1# *@
+        @*         $1$ </RadzenLabel> #1# *@
+        @*     </div> *@
+        @*     <div class="col-md-1"> *@
+        @*         Отправить арендатору: *@
+        @*         <RadzenSwitch Name="SendToLessee" Disabled="string.IsNullOrEmpty(Contract?.Lessee.Email)" @bind-Value="@SendToLessee"/> *@
+        @*     </div> *@
+        @*     <div class="col-md-3"> *@
+        @*         <RadzenLabel Component="SendToPartner"> *@
+        @*             <Template> *@
+        @*                 Отправить партнеру: @Contract?.Partner.Email *@
+        @*             </Template> *@
+        @*         </RadzenLabel> *@
+        @*     </div> *@
+        @*     <div class="col-md-1"> *@
+        @*         Отправить партнеру: *@
+        @*         <RadzenSwitch Name="SendToPartner" Disabled="string.IsNullOrEmpty(Contract?.Partner.Email)" @bind-Value="@SendToPartner"/> *@
+        @*     </div> *@
+        @* </div> *@
         
         <div class="row">
             <div class="col-md-1">
                 <RadzenLabel Text="Кому:"/>
             </div>
             <div class="col-md-10">
-                <RadzenTextBox Style="width: 100%" Name="Receiver"/>
+                <RadzenTextBox Style="width: 100%" Name="Receiver" @bind-Value="Msg.Receiver"/>
             </div>
         </div>
         <div class="row">
@@ -96,6 +96,9 @@
 
     [Parameter]
     public int ContractId { get; set; }
+    
+    [Parameter]
+    public string? ReceiversEnum { get; set; }
 
     [Inject]
     IContractsRepository ContractsRepository { get; set; } = null!;
@@ -110,11 +113,12 @@
     NotificationService NotificationService { get; set; } = null!;
 
     Contract? Contract { get; set; }
+    
     IEnumerable<string> Templates { get; set; } = null!;
+    
     string CurrentTemplateName { get; set; } = null!;
+    
     Message Msg { get; } = new();
-    bool SendToLessee { get; set; }
-    bool SendToPartner { get; set; }
 
     async Task OnTemplateChange()
     {
@@ -122,14 +126,29 @@
 
         Msg.Theme = CurrentTemplateName;
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         Contract = await ContractsRepository.GetContractById(ContractId);
 
         Templates = await TemplatesRepository.GetAllTemplateNames();
 
-        Msg.Receiver = Contract.Lessee.Email ?? string.Empty;
+        if (string.IsNullOrEmpty(ReceiversEnum)) return;
+        switch ((Receivers)Enum.Parse<Receivers>(ReceiversEnum))
+        {
+            case Receivers.Lessee:
+                Msg.Receiver = Contract.Lessee.Email ?? string.Empty;
+                break;
+            case Receivers.Partner:
+                Msg.Receiver = Contract.Partner.Email ?? string.Empty;
+                break;
+            case Receivers.All:
+                Msg.Receiver = $"{Contract.Lessee.Email ?? string.Empty};{Contract.Partner.Email ?? string.Empty}";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
     }
 
     void OnSubmit(Message message)

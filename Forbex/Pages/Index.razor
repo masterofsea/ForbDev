@@ -15,7 +15,6 @@
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or"
                 ColumnWidth="300px" RowRender="@RowRender" ExpandMode="DataGridExpandMode.Single" 
                 CellContextMenu="@OnCellContextMenu">
-                
     <Template Context="contract">
         <ContractDetails Contract="contract"/>
     </Template>
@@ -77,7 +76,7 @@
         <RadzenDataGridColumn TItem="Contract" Context="contract" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="60px">
             <Template Context="contract">
                 <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="send" Size="ButtonSize.Small" Class="m-1" 
-                              Click="@(_ => GoToLetterCreation(contract.Id))" @onclick:stopPropagation="true"/>
+                              Click="@(async _ => await OpenSendMailDialogueWindow(contract))" @onclick:stopPropagation="true"/>
                 @* <RadzenMenu> *@
                 @*     $1$ <RadzenMenuItem Text="General" Icon="home"> #1# *@
                 @*     $1$     <RadzenMenuItem Text="Buttons" Path="buttons" Icon="account_circle" Click="@(_ => GoToLetterCreation(contract.Id))" ></RadzenMenuItem> #1# *@
@@ -127,6 +126,12 @@
             new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
+    private async Task OpenSendMailDialogueWindow(Contract contract)
+    {
+        await DialogService.OpenAsync<SendEmailDialogeWindow>($"Отправка письма по компании {contract.Lessee.Name}",
+            new Dictionary<string, object> { { "Contract", contract } },
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
+    }
     private async Task OpenPartner(Partner partner)
     {
         await DialogService.OpenAsync<PartnerCardPage>(partner.Name,
@@ -146,9 +151,7 @@
         DialogService.Open<CorrespondenceAdditionFormPage>("Добавление новой корреспонденции",
             new Dictionary<string, object> { { "Correspondence", new Correspondence
             {
-                Receiver = contract.Lessee,
-                ReceivingAddress = contract.Address,
-                SenderName = "CurrentUser"
+                Contract = contract
             } } },
             new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }

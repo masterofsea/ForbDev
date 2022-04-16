@@ -1,0 +1,31 @@
+@page "/SendEmailDialogeWindow/{Correspondence}"
+@using ForbexDAL.Data
+@using ForbexBAL.MailBox.MessageBuilding.Contracts
+
+
+<div class="row">
+    <div class="col-4">
+        <RadzenButton ButtonStyle="ButtonStyle.Info" Text="Отправить арендатору" Size="ButtonSize.Small" Class="m-1"
+                      Click="@(_ => GoToLetterCreation(Contract.Id, Receivers.Lessee))" @onclick:stopPropagation="true"/>
+    </div>
+    
+    <div class="col-4">
+        <RadzenButton ButtonStyle="ButtonStyle.Info" Text="Отправить партнеру" Size="ButtonSize.Small" Class="m-1"
+                      Click="@(_ => GoToLetterCreation(Contract.Id, Receivers.Partner))" @onclick:stopPropagation="true"/>
+    </div>
+    
+    <div class="col-4">
+        <RadzenButton ButtonStyle="ButtonStyle.Info" Text="Отправить всем" Size="ButtonSize.Small" Class="m-1"
+                      Click="@(_ => GoToLetterCreation(Contract.Id, Receivers.All))" @onclick:stopPropagation="true"/>
+    </div>
+</div>
+
+
+@code {
+    [Inject]
+    NavigationManager NavManager { get; set; } = null!;
+    private void GoToLetterCreation(int contractId, Receivers receivers) => NavManager.NavigateTo($"Mail/{contractId}/{receivers}");
+    
+    [Parameter]
+    public Contract? Contract { get; set; }
+}

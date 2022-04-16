@@ -16,18 +16,39 @@
                 AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" 
                 EditMode="DataGridEditMode.Single" RowUpdate="@OnUpdateRow">
     <Columns>
-        <RadzenDataGridColumn TItem="Correspondence" Property="ReceivingAddress" Title="Дата поступления" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="Correspondence" Property="ReceivingDate" Title="Дата поступления" FormatString="{0:d}">
+            <EditTemplate Context="data">
+                <RadzenDatePicker DateFormat="d" Name="ReceivingDate" TValue="DateTime" @bind-value="@data.ReceivingDate"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Correspondence" Property="IssuanceDate" Title="Дата выдачи" FormatString="{0:d}">
+            <EditTemplate Context="data">
+                <RadzenDatePicker DateFormat="d" Name="IssuanceDate" TValue="DateTime" @bind-value="@data.IssuanceDate"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Correspondence" Property="Status" Title="Статус отправки">
             <EditTemplate Context="data">
                 <RadzenDropDown @bind-Value="data.Status" Data="@letterStatuses"/>
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="Correspondence" Property="SenderName" Title="Отправитель"/>
-        <RadzenDataGridColumn TItem="Correspondence" Property="ReceivingAddress" Title="Адрес"/>
+        <RadzenDataGridColumn TItem="Correspondence" Property="SenderNames" Title="Отправитель">
+            <EditTemplate Context="data">
+                <RadzenTextBox @bind-Value="data.SenderNames"/>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Correspondence" Property="Contract.Address" Title="Адрес"/>
         <RadzenDataGridColumn TextAlign="TextAlign.Center" TItem="Correspondence" Property="Receiver" Title="Получатель">
             <Template Context="data">
-                <RadzenButton Click="@(async _ => await OpenLessee(data.Receiver))" Icon="view_in_ar" Text="@data.Receiver.Name" 
-                              Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Secondary" Style="font-size: small"/>
+                <RadzenButton Click="@(async _ => await OpenLessee(data.Contract?.Lessee))" Icon="view_in_ar" Text="@data.Contract?.Lessee.Name" 
+                              Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Style="font-size: small"/>
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TextAlign="TextAlign.Center" TItem="Correspondence" Property="Receiver" Title="Договор ПО">
+            <Template Context="data">
+                <RadzenButton Click="@(async _ => await OpenMailContract(data.Contract?.MailContract))" Icon="mail" 
+                              Text="@data.Contract?.MailContract.MailContractNumber" 
+                              Size="ButtonSize.Small" 
+                              ButtonStyle="@(data.Contract.MailContract.IsPaid? ButtonStyle.Success : ButtonStyle.Danger)" Style="font-size: small"/>
             </Template>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TextAlign="TextAlign.Center" TItem="Correspondence" Property="IsPaid" Title="Платное письмо">
@@ -41,14 +62,17 @@
                     <p>Нет</p>
                 }
             </Template>
+            <EditTemplate Context="data">
+                <RadzenCheckBox TValue="bool" TriState="false" @bind-Value="data.IsPaid"/>
+            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Correspondence" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
             <Template Context="correspondence">
-                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => EditRow(correspondence))" @onclick:stopPropagation="true"/>
+                <RadzenButton Size="ButtonSize.Small" Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => EditRow(correspondence))" @onclick:stopPropagation="true"/>
             </Template>
             <EditTemplate Context="correspondence">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@(_ => SaveRow(correspondence))"/>
-                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => CancelEdit(correspondence))"/>
+                <RadzenButton Size="ButtonSize.Small" Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@(_ => SaveRow(correspondence))"/>
+                <RadzenButton Size="ButtonSize.Small" Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => CancelEdit(correspondence))"/>
             </EditTemplate>
         </RadzenDataGridColumn>
         
@@ -56,7 +80,9 @@
 </RadzenDataGrid>
 
 @code {
-    IEnumerable<Correspondence>? Correspondences { get; set; }
+    IPartnersRepository PartnersRepository { get; set; }
+    IEnumerable<Correspondence>? Correspondences { get
+        ; set; }
 
     [Inject]
     ICorrespondenceRepository CorrespondenceRepository { get; set; } = null!;
@@ -76,6 +102,13 @@
     {
         await DialogService.OpenAsync<LesseeCardPage>(lessee.Name,
             new Dictionary<string, object> { { "Lessee", lessee } },
+            new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
+    }
+    
+    private async Task OpenMailContract(MailContract mailContract)
+    {
+        await DialogService.OpenAsync<MailContractCardPage>(mailContract.MailContractNumber,
+            new Dictionary<string, object> { { "MailContract", mailContract } },
             new DialogOptions { Width = "700px", Draggable = false, CloseDialogOnOverlayClick = true });
     }
     

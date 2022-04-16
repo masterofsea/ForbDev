@@ -14,10 +14,10 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-                <RadzenTextBox style="width: 100%" Name="Ifts" TValue="string" @bind-Value="Correspondence.ReceivingAddress.Ifts"/>
+                <RadzenTextBox style="width: 100%" Name="Ifts" TValue="string" @bind-Value="Correspondence.Contract.Address.Ifts"/>
             </div>
             <div class="col-md-8">
-                <RadzenTextBox style="width: 100%" Name="Address" @bind-Value="@Correspondence.ReceivingAddress.FullAddress"/>
+                <RadzenTextBox style="width: 100%" Name="Address" @bind-Value="@Correspondence.Contract.Address.FullAddress"/>
             </div>
         </div>
         <div class="row" style="margin-bottom: 0">
@@ -33,15 +33,15 @@
                 <RadzenDatePicker DateFormat="d" style="width: 100%;" TValue="DateTime?"/>
             </div>
             <div class="col-md-8">
-                <RadzenAutoComplete Data="@senders" TextProperty="Item1" @bind-Value="Correspondence.SenderName"/>
+                <RadzenAutoComplete style="width: 100%;" Data="@senders" TextProperty="Item1" @onkeydown="args => Console.WriteLine(args.Key)"/>
             </div>
         </div>
         <div class="row" style="margin-bottom: 0">
             <div class="col-md-4">
-                <RadzenLabel Text="Дата" TValue="string"/>
+                <RadzenLabel Text="Дата выдачи" TValue="string"/>
             </div>
             <div class="text-align-left col-md-8">
-                <RadzenLabel Text="Состояние"/>
+                Статус отправки
             </div>
         </div>
         <div class="row">
@@ -49,7 +49,7 @@
                 <RadzenDatePicker DateFormat="d" style="width: 100%;" TValue="DateTime?"/>
             </div>
             <div class="col-md-8">
-                <RadzenTextBox style="width: 100%;" Placeholder="Состояние"/>
+                <RadzenDropDown Text="Состояние" Data="@letterStatuses" @bind-Value="@Correspondence.Status"/>
             </div>
         </div>
     </div>
@@ -62,11 +62,13 @@
 @code {
     [Parameter]
     public Correspondence? Correspondence { get; set; }
-
+    
+    IEnumerable<LetterStatus> letterStatuses =  Enum.GetValues(typeof(LetterStatus)).Cast<LetterStatus>();
     List<Tuple<string>> senders;
     protected override void OnInitialized()
     {
-        senders = new (){
+        senders = new()
+        {
             new Tuple<string>("ИФНС 46"),
             new Tuple<string>("ФСС"),
             new Tuple<string>("ПФР"),
@@ -88,12 +90,7 @@
             new Tuple<string>("таможенная телеграмма"),
             new Tuple<string>("ФАС"),
             new Tuple<string>("контрагент")
-    // "ФСС", "ПФР", "ФОМС", "банк", "ГУ банка России", "извещение",
-            // "судебное извещение", "возвратное письмо", "уведомление", "суд",
-            // "судебный пристав", "прокуратура", "таможня", "ГИБДД", "ФСБ",
-            // "кадастровая служба", "УФАС", "телеграмма", "судебная телеграмма",
-            // "таможенная телеграмма", "ФАС", "контрагент"
-            };
+        };
     }
     bool _busy;
     async Task OnBusyClick(Correspondence correspondence)
