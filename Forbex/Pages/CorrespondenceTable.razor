@@ -66,6 +66,18 @@
                 <RadzenCheckBox TValue="bool" TriState="false" @bind-Value="data.IsPaid"/>
             </EditTemplate>
         </RadzenDataGridColumn>
+        <RadzenDataGridColumn TextAlign="TextAlign.Center" TItem="Correspondence" Property="IsPaid" Title="Оплата договора аренды">
+            <Template Context="data">
+                @if (data.IsPaid)
+                {
+                    <p>Да</p>
+                }
+                else
+                {
+                    <p>Нет</p>
+                }
+            </Template>
+        </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="Correspondence" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
             <Template Context="correspondence">
                 <RadzenButton Size="ButtonSize.Small" Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => EditRow(correspondence))" @onclick:stopPropagation="true"/>

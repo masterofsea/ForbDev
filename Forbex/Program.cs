@@ -21,6 +21,7 @@ builder.Services.AddTransient<ITemplatesRepository, TemplatesRepository>();
 builder.Services.AddTransient<IMessageBuilder, MessageBuilder>();
 builder.Services.AddSingleton<ICorrespondenceRepository, MockCorrespondenceRepository>();
 builder.Services.AddSingleton<IPartnersRepository, MockPartnerRepository>();
+builder.Services.AddSingleton<IAddressRepository, MockAddressRepository>();
 
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();

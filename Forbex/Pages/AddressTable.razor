@@ -1,7 +1,60 @@
 @page "/AddressTable"
+@using ForbexDAL.Repositories.Contracts
+@using ForbexDAL.Data
 <h3>AddressTable</h3>
 
-<RadzenDataGrid></RadzenDataGrid>
+<RadzenDataGrid @ref="@_addressesGrid" Data="@Addresses" TItem="Address" AllowPaging="true" PageSize="20" 
+                AllowSorting="true" AllowMultiColumnSorting="true"
+                AllowFiltering="true" LogicalFilterOperator="LogicalFilterOperator.Or" >
+    @* EditMode="DataGridEditMode.Single" RowUpdate="@OnUpdateRow"> *@
+    <Columns>
+            <RadzenDataGridColumn TItem="Address" Property="FullName" Title="Название">
+                @* <EditTemplate Context="data"> *@
+                @*     <RadzenTextBox @bind-Value="data.Name"/> *@
+                @* </EditTemplate> *@
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Address" Property="Ifts" Title="ИФНС" Width="100px" Sortable="false" TextAlign="TextAlign.Center">
+                @* <EditTemplate Context="data"> *@
+                @*     <RadzenTextBox @bind-Value="data.Email"/> *@
+                @* </EditTemplate> *@
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Address" Property="PostOfficeNumber" Title="# Почты" Sortable="false" Width="120px" TextAlign="TextAlign.Center">
+                @* <EditTemplate Context="data"> *@
+                @*     <RadzenTextBox @bind-Value="data.Phone"/> *@
+                @* </EditTemplate> *@
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Address" Property="Owner.Name" Title="Владелец" Width="200px">
+                @* <EditTemplate Context="data"> *@
+                @*     <RadzenTextBox @bind-Value="data.AdditionalContacts"/> *@
+                @* </EditTemplate> *@
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Address" Property="POA" Title="Доверенность">
+                @* <EditTemplate Context="data"> *@
+                @*     <RadzenTextBox @bind-Value="data.ContactName"/> *@
+                @* </EditTemplate> *@
+            </RadzenDataGridColumn>
+            @* <RadzenDataGridColumn TItem="Partner" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center"> *@
+            @*     <Template Context="partner"> *@
+            @*         <RadzenButton Size="ButtonSize.Small" Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => EditRow(partner))" @onclick:stopPropagation="true"/> *@
+            @*     </Template> *@
+            @*     <EditTemplate Context="partner"> *@
+            @*         <RadzenButton Size="ButtonSize.Small" Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@(_ => SaveRow(partner))"/> *@
+            @*         <RadzenButton Size="ButtonSize.Small" Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(_ => CancelEdit(partner))"/> *@
+            @*     </EditTemplate> *@
+            @* </RadzenDataGridColumn> *@
+        </Columns>
+</RadzenDataGrid>
 @code {
+    [Inject]
+    IAddressRepository AddressRepository { get; set; }
+    RadzenDataGrid<Address> _addressesGrid = null!;
+    IEnumerable<Address> Addresses { get; set; } = new List<Address>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Addresses = await AddressRepository.GetAllAddresses();
+    }
+    
+    
     
 }
